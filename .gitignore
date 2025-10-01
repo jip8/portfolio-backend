@@ -8,6 +8,8 @@
 *.so
 *.dylib
 
+__debug_bin*
+
 # Test binary, built with `go test -c`
 *.test
 
@@ -16,7 +18,6 @@
 coverage.*
 *.coverprofile
 profile.cov
-
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
@@ -25,8 +26,9 @@ go.work
 go.work.sum
 
 # env file
+config.yaml
 .env
 
 # Editor/IDE
 # .idea/
-# .vscode/
+.vscode/
