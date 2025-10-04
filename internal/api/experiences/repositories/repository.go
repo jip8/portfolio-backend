@@ -5,8 +5,8 @@ import (
 
 	"github.com/jip/portfolio-backend/internal/api/experiences"
 	"github.com/jip/portfolio-backend/internal/entity"
+	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/go-redis/redis/v8"
-	"github.com/jmoiron/sqlx"
 )
 
 type experiencesRepo struct {
@@ -17,13 +17,13 @@ type experiencesRepo struct {
 	getList *GetListRepository
 }
 
-func NewExperiencesRepository(config *entity.Config, redisClient *redis.Client, db *sqlx.DB) experiences.Repository {
+func NewExperiencesRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) experiences.Repository {
 	return &experiencesRepo{
-		create:  NewCreateRepository(config, redisClient, db),
-		update:  NewUpdateRepository(config, redisClient, db),
-		delete:  NewDeleteRepository(config, redisClient, db),
-		getById: NewGetByIdRepository(config, redisClient, db),
-		getList: NewGetListRepository(config, redisClient, db),
+		create:  NewCreateRepository(config, redisClient, postgresClient),
+		update:  NewUpdateRepository(config, redisClient, postgresClient),
+		delete:  NewDeleteRepository(config, redisClient, postgresClient),
+		getById: NewGetByIdRepository(config, redisClient, postgresClient),
+		getList: NewGetListRepository(config, redisClient, postgresClient),
 	}
 }
 

@@ -6,20 +6,20 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
-	"github.com/jmoiron/sqlx"
+	"github.com/jip/portfolio-backend/internal/services"
 )
 
 type UpdateRepository struct {
-	config      *entity.Config
-	redisClient *redis.Client
-	db          *sqlx.DB
+	config         *entity.Config
+	redisClient    *redis.Client
+	postgresClient *services.PostgresClient
 }
 
-func NewUpdateRepository(config *entity.Config, redisClient *redis.Client, db *sqlx.DB) *UpdateRepository {
+func NewUpdateRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *UpdateRepository {
 	return &UpdateRepository{
-		config:      config,
-		redisClient: redisClient,
-		db:          db,
+		config:         config,
+		redisClient:    redisClient,
+		postgresClient: postgresClient,
 	}
 }
 
@@ -37,12 +37,14 @@ func (r *UpdateRepository) Execute(ctx context.Context, req entity.ExperienceFla
 			id = :id
 	`
 
-	namedQuery, args, err := r.db.BindNamed(query, req)
+	executor := r.postgresClient.GetExecutor(ctx)
+
+	namedQuery, args, err := executor.BindNamed(query, req)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := r.db.ExecContext(ctx, namedQuery, args...)
+	result, err := executor.ExecContext(ctx, namedQuery, args...)
 	if err != nil {
 		return nil, err
 	}

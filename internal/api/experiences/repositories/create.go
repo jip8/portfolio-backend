@@ -5,20 +5,20 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
-	"github.com/jmoiron/sqlx"
+	"github.com/jip/portfolio-backend/internal/services"
 )
 
 type CreateRepository struct {
-	config      *entity.Config
-	redisClient *redis.Client
-	db          *sqlx.DB
+	config         *entity.Config
+	redisClient    *redis.Client
+	postgresClient *services.PostgresClient
 }
 
-func NewCreateRepository(config *entity.Config, redisClient *redis.Client, db *sqlx.DB) *CreateRepository {
+func NewCreateRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *CreateRepository {
 	return &CreateRepository{
-		config:      config,
-		redisClient: redisClient,
-		db:          db,
+		config:         config,
+		redisClient:    redisClient,
+		postgresClient: postgresClient,
 	}
 }
 
@@ -31,13 +31,15 @@ func (r *CreateRepository) Execute(ctx context.Context, req entity.ExperienceFla
 		RETURNING id
 	`
 
-	namedQuery, args, err := r.db.BindNamed(query, req)
+	executor := r.postgresClient.GetExecutor(ctx)
+
+	namedQuery, args, err := executor.BindNamed(query, req)
 	if err != nil {
 		return nil, err
 	}
 
 	var newID int
-	err = r.db.QueryRowContext(ctx, namedQuery, args...).Scan(&newID)
+	err = executor.QueryRowContext(ctx, namedQuery, args...).Scan(&newID)
 	if err != nil {
 		return nil, err
 	}

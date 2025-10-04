@@ -5,20 +5,20 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
-	"github.com/jmoiron/sqlx"
+	"github.com/jip/portfolio-backend/internal/services"
 )
 
 type GetByIdRepository struct {
-	config      *entity.Config
-	redisClient *redis.Client
-	db          *sqlx.DB
+	config         *entity.Config
+	redisClient    *redis.Client
+	postgresClient *services.PostgresClient
 }
 
-func NewGetByIdRepository(config *entity.Config, redisClient *redis.Client, db *sqlx.DB) *GetByIdRepository {
+func NewGetByIdRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *GetByIdRepository {
 	return &GetByIdRepository{
-		config:      config,
-		redisClient: redisClient,
-		db:          db,
+		config:         config,
+		redisClient:    redisClient,
+		postgresClient: postgresClient,
 	}
 }
 
@@ -36,7 +36,8 @@ func (r *GetByIdRepository) Execute(ctx context.Context, id int) (*entity.Experi
 	
 	var experience entity.ExperienceResp
 	
-	if err := r.db.GetContext(ctx, &experience, query, id); err != nil {
+	executor := r.postgresClient.GetExecutor(ctx)
+	if err := executor.GetContext(ctx, &experience, query, id); err != nil {
 		return nil, err
 	}
 

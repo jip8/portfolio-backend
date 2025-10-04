@@ -5,20 +5,21 @@ import (
 	"strings"
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
+	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/jmoiron/sqlx"
 )
 
 type GetListRepository struct {
-	config      *entity.Config
-	redisClient *redis.Client
-	db          *sqlx.DB
+	config         *entity.Config
+	redisClient    *redis.Client
+	postgresClient *services.PostgresClient
 }
 
-func NewGetListRepository(config *entity.Config, redisClient *redis.Client, db *sqlx.DB) *GetListRepository {
+func NewGetListRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *GetListRepository {
 	return &GetListRepository{
-		config:      config,
-		redisClient: redisClient,
-		db:          db,
+		config:         config,
+		redisClient:    redisClient,
+		postgresClient: postgresClient,
 	}
 }
 
@@ -45,14 +46,16 @@ func (r *GetListRepository) Execute(ctx context.Context, listReq entity.ListReq)
 		return nil, err
 	}
 
-	namedQuery = r.db.Rebind(namedQuery)
+	executor := r.postgresClient.GetExecutor(ctx)
 
-	if err := r.db.SelectContext(ctx, &items, namedQuery, args...); err != nil {
+	namedQuery = executor.Rebind(namedQuery)
+
+	if err := executor.SelectContext(ctx, &items, namedQuery, args...); err != nil {
 		return nil, err
 	}
 
 	var total int
-	if err := r.db.GetContext(ctx, &total, `SELECT COUNT(*) FROM portfolio.experiences`); err != nil {
+	if err := executor.GetContext(ctx, &total, `SELECT COUNT(*) FROM portfolio.experiences`); err != nil {
 		return nil, err
 	}
 

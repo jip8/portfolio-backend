@@ -34,7 +34,7 @@ func main() {
 		log.Fatalf("Failed to create Minio client: %s", err)
 	}
 
-	db, err := services.NewPostgresClient(config)
+	postgresClient, err := services.NewPostgresClient(config)
 	if err != nil {
 		log.Fatalf("Failed to create Postgres client: %s", err)
 	}
@@ -51,8 +51,8 @@ func main() {
 	loginHandler := loginHandlers.NewLoginHandler(loginUseCase)
 	loginHandlers.LoginRoutes(e.Group("/login"), loginHandler)
 
-	experiencesRepository := experiencesRepositories.NewExperiencesRepository(config, redisClient, db)
-	experiencesUseCase := experiencesUseCases.NewExperiencesUseCase(config, redisClient, experiencesRepository)
+	experiencesRepository := experiencesRepositories.NewExperiencesRepository(config, redisClient, postgresClient)
+	experiencesUseCase := experiencesUseCases.NewExperiencesUseCase(config, redisClient, experiencesRepository, postgresClient)
 	experiencesHandler := experiencesHandlers.NewExperiencesHandler(experiencesUseCase)
 	experiencesHandlers.ExperiencesRoutes(e.Group("/experiences"), experiencesHandler, jwtMiddleware)
 

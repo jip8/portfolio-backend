@@ -6,19 +6,22 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/api/experiences"
 	"github.com/jip/portfolio-backend/internal/entity"
+	"github.com/jip/portfolio-backend/internal/services"
 )
 
 type GetListUC struct {
 	config          *entity.Config
 	redisClient     *redis.Client
 	experiencesRepo experiences.Repository
+	postgresClient 	*services.PostgresClient
 }
 
-func NewGetListUC(config *entity.Config, redisClient *redis.Client, experiencesRepo experiences.Repository) *GetListUC {
+func NewGetListUC(config *entity.Config, redisClient *redis.Client, experiencesRepo experiences.Repository, postgresClient *services.PostgresClient) *GetListUC {
 	return &GetListUC{
-		config:          config,
-		redisClient:     redisClient,
-		experiencesRepo: experiencesRepo,
+		config:          	config,
+		redisClient:     	redisClient,
+		experiencesRepo: 	experiencesRepo,
+		postgresClient: 	postgresClient,
 	}
 }
 

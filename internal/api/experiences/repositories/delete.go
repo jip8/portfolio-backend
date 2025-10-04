@@ -5,25 +5,26 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
-	"github.com/jmoiron/sqlx"
+	"github.com/jip/portfolio-backend/internal/services"
 )
 
 type DeleteRepository struct {
-	config      *entity.Config
-	redisClient *redis.Client
-	db          *sqlx.DB
+	config         *entity.Config
+	redisClient    *redis.Client
+	postgresClient *services.PostgresClient
 }
 
-func NewDeleteRepository(config *entity.Config, redisClient *redis.Client, db *sqlx.DB) *DeleteRepository {
+func NewDeleteRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *DeleteRepository {
 	return &DeleteRepository{
-		config:      config,
-		redisClient: redisClient,
-		db:          db,
+		config:         config,
+		redisClient:    redisClient,
+		postgresClient: postgresClient,
 	}
 }
 
 func (r *DeleteRepository) Execute(ctx context.Context, id int) error {
 	query := `DELETE FROM portfolio.experiences WHERE id = $1`
-	_, err := r.db.ExecContext(ctx, query, id)
+	executor := r.postgresClient.GetExecutor(ctx)
+	_, err := executor.ExecContext(ctx, query, id)
 	return err
 }
