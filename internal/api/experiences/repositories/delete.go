@@ -24,6 +24,7 @@ func NewDeleteRepository(config *entity.Config, redisClient *redis.Client, db *g
 
 func (r *DeleteRepository) Execute(ctx context.Context, id int) error {
 	
+	
 
 	return nil
 }

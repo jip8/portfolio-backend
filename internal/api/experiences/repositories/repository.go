@@ -27,11 +27,11 @@ func NewExperiencesRepository(config *entity.Config, redisClient *redis.Client, 
 	}
 }
 
-func (r *experiencesRepo) Create(ctx context.Context, req entity.ExperienceFlat) (*entity.ExperienceResp, error) {
+func (r *experiencesRepo) Create(ctx context.Context, req entity.ExperienceFlat) (*int, error) {
 	return r.create.Execute(ctx, req)
 }
 
-func (r *experiencesRepo) Update(ctx context.Context, req entity.ExperienceFlat) (*entity.ExperienceResp, error) {
+func (r *experiencesRepo) Update(ctx context.Context, req entity.ExperienceFlat) (*int, error) {
 	return r.update.Execute(ctx, req)
 }
 

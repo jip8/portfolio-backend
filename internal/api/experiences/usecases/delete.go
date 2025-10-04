@@ -5,22 +5,29 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
+	"github.com/jip/portfolio-backend/internal/api/experiences"
 )
 
 type DeleteUC struct {
-	config      *entity.Config
-	redisClient *redis.Client
+	config      	*entity.Config
+	redisClient 	*redis.Client
+	experiencesRepo experiences.Repository
 }
 
-func NewDeleteUC(config *entity.Config, redisClient *redis.Client) *DeleteUC {
+func NewDeleteUC(config *entity.Config, redisClient *redis.Client, experiencesRepo experiences.Repository) *DeleteUC {
 	return &DeleteUC{
-		config:      config,
-		redisClient: redisClient,
+		config:      		config,
+		redisClient: 		redisClient,
+		experiencesRepo: 	experiencesRepo,
 	}
 }
 
 func (u *DeleteUC) Execute(ctx context.Context, id int) error {
 	
+	err := u.experiencesRepo.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

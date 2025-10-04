@@ -22,7 +22,7 @@ func NewCreateRepository(config *entity.Config, redisClient *redis.Client, db *g
 	}
 }
 
-func (r *CreateRepository) Execute(ctx context.Context, req entity.ExperienceFlat) (*entity.ExperienceResp, error) {
+func (r *CreateRepository) Execute(ctx context.Context, req entity.ExperienceFlat) (*int, error) {
 	
 
 	return nil, nil

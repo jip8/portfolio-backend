@@ -17,12 +17,14 @@ type experiencesUC struct {
 }
 
 func NewExperiencesUseCase(config *entity.Config, redisClient *redis.Client, experiencesRepo experiences.Repository) experiences.UseCase {
+	byId := NewGetByIdUC(config, redisClient, experiencesRepo)
+	
 	return &experiencesUC{
-		create: NewCreateUC(config, redisClient),
-		update: NewUpdateUC(config, redisClient),
-		delete: NewDeleteUC(config, redisClient),
-		getById: NewGetByIdUC(config, redisClient),
-		getList: NewGetListUC(config, redisClient),
+		create: 	NewCreateUC(config, redisClient, experiencesRepo, byId),
+		update: 	NewUpdateUC(config, redisClient, experiencesRepo, byId),
+		delete: 	NewDeleteUC(config, redisClient, experiencesRepo),
+		getById: 	byId,
+		getList: 	NewGetListUC(config, redisClient, experiencesRepo),
 	}
 }
 
