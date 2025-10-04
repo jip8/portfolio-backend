@@ -1,12 +1,13 @@
 package entity
 
 type ExperienceFlat struct {
+	Id          *int    `json:"id"`
 	Title       string `json:"title"`
-	Description string `json:"description"`
+	Description *string `json:"description"`
 }
 
 type ExperienceResp struct {
-	ID          string `json:"id"`
+	Id          string `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
