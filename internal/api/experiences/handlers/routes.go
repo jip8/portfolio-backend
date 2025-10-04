@@ -5,14 +5,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func ExperiencesRoutes(e *echo.Group, handler experiences.Handlers) {
-	e.POST("", handler.Create())
-	e.PUT("/:id", handler.Update())
-	e.DELETE("/:id", handler.Delete())
-
+func ExperiencesRoutes(e *echo.Group, handler experiences.Handlers, authMiddleware echo.MiddlewareFunc) {
+	// Public routes
 	e.GET("/:id", handler.ById())
-
 	e.GET("", handler.List())
 
-	// e.GET("/transitions", handler.GetTransitions())
+	// Authenticated routes
+	authGroup := e.Group("", authMiddleware)
+	authGroup.POST("", handler.Create())
+	authGroup.PUT("/:id", handler.Update())
+	authGroup.DELETE("/:id", handler.Delete())
 }

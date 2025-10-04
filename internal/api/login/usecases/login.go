@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
 )
@@ -58,8 +58,8 @@ func (u *LoginUC) Execute(ctx context.Context, req entity.LoginRequest, ip strin
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &entity.Claims{
 		Username: req.Username,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
 	}
 

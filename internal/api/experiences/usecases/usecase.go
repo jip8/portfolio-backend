@@ -9,22 +9,22 @@ import (
 )
 
 type experiencesUC struct {
-	create 	*CreateUC
-	update 	*UpdateUC
-	delete 	*DeleteUC
+	create  *CreateUC
+	update  *UpdateUC
+	delete  *DeleteUC
 	getById *GetByIdUC
 	getList *GetListUC
 }
 
 func NewExperiencesUseCase(config *entity.Config, redisClient *redis.Client, experiencesRepo experiences.Repository) experiences.UseCase {
 	byId := NewGetByIdUC(config, redisClient, experiencesRepo)
-	
+
 	return &experiencesUC{
-		create: 	NewCreateUC(config, redisClient, experiencesRepo, byId),
-		update: 	NewUpdateUC(config, redisClient, experiencesRepo, byId),
-		delete: 	NewDeleteUC(config, redisClient, experiencesRepo),
-		getById: 	byId,
-		getList: 	NewGetListUC(config, redisClient, experiencesRepo),
+		create:  NewCreateUC(config, redisClient, experiencesRepo, byId),
+		update:  NewUpdateUC(config, redisClient, experiencesRepo, byId),
+		delete:  NewDeleteUC(config, redisClient, experiencesRepo),
+		getById: byId,
+		getList: NewGetListUC(config, redisClient, experiencesRepo),
 	}
 }
 
@@ -44,6 +44,6 @@ func (u *experiencesUC) GetById(ctx context.Context, id int) (*entity.Experience
 	return u.getById.Execute(ctx, id)
 }
 
-func (u *experiencesUC) GetList(ctx context.Context, ListReq entity.ListReq) (*entity.List, error) {
+func (u *experiencesUC) GetList(ctx context.Context, ListReq entity.ListReq) (*entity.List[entity.ExperienceResp], error) {
 	return u.getList.Execute(ctx, ListReq)
 }

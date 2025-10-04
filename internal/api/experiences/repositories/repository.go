@@ -3,25 +3,25 @@ package repositories
 import (
 	"context"
 
+	"github.com/jip/portfolio-backend/internal/api/experiences"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/go-redis/redis/v8"
-	"gorm.io/gorm"
-	"github.com/jip/portfolio-backend/internal/api/experiences"
+	"github.com/jmoiron/sqlx"
 )
 
 type experiencesRepo struct {
-	create 	*CreateRepository
-	update 	*UpdateRepository
-	delete 	*DeleteRepository
+	create  *CreateRepository
+	update  *UpdateRepository
+	delete  *DeleteRepository
 	getById *GetByIdRepository
 	getList *GetListRepository
 }
 
-func NewExperiencesRepository(config *entity.Config, redisClient *redis.Client, db *gorm.DB) experiences.Repository {
+func NewExperiencesRepository(config *entity.Config, redisClient *redis.Client, db *sqlx.DB) experiences.Repository {
 	return &experiencesRepo{
-		create: NewCreateRepository(config, redisClient, db),
-		update: NewUpdateRepository(config, redisClient, db),
-		delete: NewDeleteRepository(config, redisClient, db),
+		create:  NewCreateRepository(config, redisClient, db),
+		update:  NewUpdateRepository(config, redisClient, db),
+		delete:  NewDeleteRepository(config, redisClient, db),
 		getById: NewGetByIdRepository(config, redisClient, db),
 		getList: NewGetListRepository(config, redisClient, db),
 	}
@@ -43,6 +43,6 @@ func (r *experiencesRepo) GetById(ctx context.Context, id int) (*entity.Experien
 	return r.getById.Execute(ctx, id)
 }
 
-func (r *experiencesRepo) GetList(ctx context.Context, listReq entity.ListReq) (*entity.List, error) {
+func (r *experiencesRepo) GetList(ctx context.Context, listReq entity.ListReq) (*entity.List[entity.ExperienceResp], error) {
 	return r.getList.Execute(ctx, listReq)
 }

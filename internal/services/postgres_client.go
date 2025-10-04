@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/jip/portfolio-backend/internal/entity"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-func NewPostgresClient(cfg *entity.Config) (*gorm.DB, error) {
+func NewPostgresClient(cfg *entity.Config) (*sqlx.DB, error) {
 	host := cfg.Postgres.Host
 	port := cfg.Postgres.Port
 	user := cfg.Postgres.User
@@ -18,7 +18,7 @@ func NewPostgresClient(cfg *entity.Config) (*gorm.DB, error) {
 
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", host, port, user, password, dbname, sslmode)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := sqlx.Connect("pgx", dsn)
 	if err != nil {
 		return nil, err
 	}

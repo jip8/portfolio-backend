@@ -11,5 +11,5 @@ type UseCase interface {
 	Update(ctx context.Context, req entity.ExperienceFlat) (*entity.ExperienceResp, error)
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (*entity.ExperienceResp, error)
-	GetList(ctx context.Context, listReq entity.ListReq) (*entity.List, error)
+	GetList(ctx context.Context, listReq entity.ListReq) (*entity.List[entity.ExperienceResp], error)
 }

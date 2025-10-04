@@ -8,12 +8,13 @@ import (
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo-jwt/v4"
 
 	loginHandlers "github.com/jip/portfolio-backend/internal/api/login/handlers"
 	loginUseCases "github.com/jip/portfolio-backend/internal/api/login/usecases"
 
-	experiencesHandlers 	"github.com/jip/portfolio-backend/internal/api/experiences/handlers"
-	experiencesUseCases 	"github.com/jip/portfolio-backend/internal/api/experiences/usecases"
+	experiencesHandlers "github.com/jip/portfolio-backend/internal/api/experiences/handlers"
+	experiencesUseCases "github.com/jip/portfolio-backend/internal/api/experiences/usecases"
 	experiencesRepositories "github.com/jip/portfolio-backend/internal/api/experiences/repositories"
 )
 
@@ -42,6 +43,10 @@ func main() {
 
 	e := echo.New()
 
+	jwtMiddleware := echojwt.WithConfig(echojwt.Config{
+		SigningKey: []byte(config.JWT.Secret),
+	})
+
 	loginUseCase := loginUseCases.NewLoginUseCase(config, redisClient)
 	loginHandler := loginHandlers.NewLoginHandler(loginUseCase)
 	loginHandlers.LoginRoutes(e.Group("/login"), loginHandler)
@@ -49,7 +54,7 @@ func main() {
 	experiencesRepository := experiencesRepositories.NewExperiencesRepository(config, redisClient, db)
 	experiencesUseCase := experiencesUseCases.NewExperiencesUseCase(config, redisClient, experiencesRepository)
 	experiencesHandler := experiencesHandlers.NewExperiencesHandler(experiencesUseCase)
-	experiencesHandlers.ExperiencesRoutes(e.Group("/experiences"), experiencesHandler)
+	experiencesHandlers.ExperiencesRoutes(e.Group("/experiences"), experiencesHandler, jwtMiddleware)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
