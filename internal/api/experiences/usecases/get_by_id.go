@@ -29,5 +29,12 @@ func (u *GetByIdUC) Execute(ctx context.Context, id int) (*entity.ExperienceResp
 		return nil, err
 	}
 
+	if resp != nil {
+		err = resp.Format()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return resp, nil
 }

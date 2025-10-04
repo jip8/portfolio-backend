@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
@@ -24,21 +23,22 @@ func NewGetByIdRepository(config *entity.Config, redisClient *redis.Client, db *
 }
 
 func (r *GetByIdRepository) Execute(ctx context.Context, id int) (*entity.ExperienceResp, error) {
-	query := `SELECT * FROM experiences WHERE id = $1`
-	var experience entity.Experience
+	query := `
+	SELECT
+		id,
+		title,
+		"function",
+		description,
+		initial_date AS initial_date_time,
+		end_date AS end_date_time,
+		actual
+	FROM portfolio.experiences WHERE id = $1`
+	
+	var experience entity.ExperienceResp
+	
 	if err := r.db.GetContext(ctx, &experience, query, id); err != nil {
 		return nil, err
 	}
 
-	initialDate := experience.InitialDate.Format("2006-01-02")
-	endDate := experience.EndDate.Format("2006-01-02")
-
-	return &entity.ExperienceResp{
-		Id:          strconv.Itoa(experience.ID),
-		Title:       experience.Title,
-		Function:    &experience.Function,
-		Description: &experience.Description,
-		InitialDate: &initialDate,
-		EndDate:     &endDate,
-	}, nil
+	return &experience, nil
 }

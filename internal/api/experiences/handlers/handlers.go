@@ -96,10 +96,27 @@ func (h *ExperiencesHandler) ById() echo.HandlerFunc {
 func (h *ExperiencesHandler) List() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var req entity.ListReq
-		if err := c.Bind(&req); err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request body"})
+
+		limitStr := c.QueryParam("limit")
+		if limitStr != "" {
+			limit, err := strconv.Atoi(limitStr)
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid 'limit' format"})
+			}
+			req.Limit = limit
 		}
-		
+
+		offsetStr := c.QueryParam("offset")
+		if offsetStr != "" {
+			offset, err := strconv.Atoi(offsetStr)
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid 'offset' format"})
+			}
+			req.Offset = offset
+		}
+
+		req.Process()
+
 		resp, err := h.useCase.GetList(c.Request().Context(), req)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})

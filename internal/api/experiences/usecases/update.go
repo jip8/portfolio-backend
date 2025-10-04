@@ -7,7 +7,7 @@ import (
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/api/experiences"
 
-	"errors"
+	"github.com/jip/portfolio-backend"
 )
 
 type UpdateUC struct {
@@ -31,10 +31,15 @@ func (u *UpdateUC) Execute(ctx context.Context, req entity.ExperienceFlat) (*ent
 	var updatedId *int
 
 	if req.Id == nil {
-		return nil, errors.New("invalid request")
+		return nil, portfolio.ErrExperienceIdIsRequired
 	}
 
-	updatedId, err := u.experiencesRepo.Update(ctx, req)
+	err := req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	updatedId, err = u.experiencesRepo.Update(ctx, req)
 	if err != nil {
 		return nil, err
 	}

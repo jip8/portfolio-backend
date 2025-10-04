@@ -1,0 +1,35 @@
+meta {
+  name: update
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{base_url}}/experiences/:id
+  body: json
+  auth: bearer
+}
+
+params:path {
+  id: 2
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "NasVerdes",
+    "function": "Dev Back-end e IA",
+    "description": "Desenvolvimento de APIs e microsserviços em Go e python",
+    "initial_date": "10-2025",
+    "end_date": "12-2025",
+    "actual": false
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+}

@@ -2,8 +2,7 @@ package repositories
 
 import (
 	"context"
-	"strconv"
-
+	"strings"
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jmoiron/sqlx"
@@ -24,36 +23,51 @@ func NewGetListRepository(config *entity.Config, redisClient *redis.Client, db *
 }
 
 func (r *GetListRepository) Execute(ctx context.Context, listReq entity.ListReq) (*entity.List[entity.ExperienceResp], error) {
-	var items []entity.Experience
-	query := `SELECT * FROM experiences LIMIT $1 OFFSET $2`
+	var items []entity.ExperienceResp
+	query := `
+	SELECT
+		id,
+		title,
+		"function",
+		description,
+		initial_date AS initial_date_time,
+		end_date AS end_date_time,
+		actual
+	FROM portfolio.experiences
+	ORDER BY ${order}
+	LIMIT :limit
+	OFFSET :offset`
 
-	if err := r.db.SelectContext(ctx, &items, query, *listReq.Limit, *listReq.Offset); err != nil {
+	query = strings.ReplaceAll(query, "${order}", listReq.Order)
+
+	namedQuery, args, err := sqlx.Named(query, listReq)
+	if err != nil {
+		return nil, err
+	}
+
+	namedQuery = r.db.Rebind(namedQuery)
+
+	if err := r.db.SelectContext(ctx, &items, namedQuery, args...); err != nil {
 		return nil, err
 	}
 
 	var total int
-	if err := r.db.GetContext(ctx, &total, `SELECT COUNT(*) FROM experiences`); err != nil {
+	if err := r.db.GetContext(ctx, &total, `SELECT COUNT(*) FROM portfolio.experiences`); err != nil {
 		return nil, err
 	}
 
-	respItems := make([]entity.ExperienceResp, len(items))
-	for i, item := range items {
-		initialDate := item.InitialDate.Format("2006-01-02")
-		endDate := item.EndDate.Format("2006-01-02")
-		respItems[i] = entity.ExperienceResp{
-			Id:          strconv.Itoa(item.ID),
-			Title:       item.Title,
-			Function:    &item.Function,
-			Description: &item.Description,
-			InitialDate: &initialDate,
-			EndDate:     &endDate,
+	if len(items) > 0 {
+		for i := range items {
+			items[i].Format()
 		}
+	} else {
+		items = make([]entity.ExperienceResp, 0)
 	}
 
 	return &entity.List[entity.ExperienceResp]{
-		Offset: *listReq.Offset,
-		Limit:  *listReq.Limit,
+		Offset: listReq.Offset,
+		Limit:  listReq.Limit,
 		Total:  total,
-		Items:  respItems,
+		Items:  items,
 	}, nil
 }

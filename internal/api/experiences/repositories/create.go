@@ -24,8 +24,10 @@ func NewCreateRepository(config *entity.Config, redisClient *redis.Client, db *s
 
 func (r *CreateRepository) Execute(ctx context.Context, req entity.ExperienceFlat) (*int, error) {
 	query := `
-		INSERT INTO experiences (title, "function", description, initial_date, end_date)
-		VALUES (:title, :function, :description, :initial_date, :end_date)
+		INSERT INTO portfolio.experiences 
+			(title, "function", description, initial_date, end_date, actual)
+		VALUES 
+			(:title, :function, :description, :initial_date_time, :end_date_time, :actual)
 		RETURNING id
 	`
 

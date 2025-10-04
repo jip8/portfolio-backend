@@ -23,7 +23,7 @@ func NewDeleteRepository(config *entity.Config, redisClient *redis.Client, db *s
 }
 
 func (r *DeleteRepository) Execute(ctx context.Context, id int) error {
-	query := `DELETE FROM experiences WHERE id = $1`
+	query := `DELETE FROM portfolio.experiences WHERE id = $1`
 	_, err := r.db.ExecContext(ctx, query, id)
 	return err
 }

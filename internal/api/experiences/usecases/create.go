@@ -28,7 +28,12 @@ func (u *CreateUC) Execute(ctx context.Context, req entity.ExperienceFlat) (*ent
 	
 	var createdId *int
 
-	createdId, err := u.experiencesRepo.Create(ctx, req)
+	err := req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	createdId, err = u.experiencesRepo.Create(ctx, req)
 	if err != nil {
 		return nil, err
 	}
