@@ -5,16 +5,16 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
-	"github.com/jmoiron/sqlx"
+	"gorm.io/gorm"
 )
 
 type CreateRepository struct {
 	config      *entity.Config
 	redisClient *redis.Client
-	db          *sqlx.DB
+	db          *gorm.DB
 }
 
-func NewCreateRepository(config *entity.Config, redisClient *redis.Client, db *sqlx.DB) *CreateRepository {
+func NewCreateRepository(config *entity.Config, redisClient *redis.Client, db *gorm.DB) *CreateRepository {
 	return &CreateRepository{
 		config:      config,
 		redisClient: redisClient,

@@ -16,7 +16,7 @@ type experiencesUC struct {
 	getList *GetListUC
 }
 
-func NewExpiriencesUseCase(config *entity.Config, redisClient *redis.Client, experiencesRepo experiences.Repository) experiences.UseCase {
+func NewExperiencesUseCase(config *entity.Config, redisClient *redis.Client, experiencesRepo experiences.Repository) experiences.UseCase {
 	return &experiencesUC{
 		create: NewCreateUC(config, redisClient),
 		update: NewUpdateUC(config, redisClient),

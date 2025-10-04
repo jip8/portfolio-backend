@@ -5,7 +5,7 @@ import (
 
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/go-redis/redis/v8"
-	sqlx "github.com/jmoiron/sqlx"
+	"gorm.io/gorm"
 	"github.com/jip/portfolio-backend/internal/api/experiences"
 )
 
@@ -17,7 +17,7 @@ type experiencesRepo struct {
 	getList *GetListRepository
 }
 
-func NewExperiencesRepository(config *entity.Config, redisClient *redis.Client, db *sqlx.DB) experiences.Repository {
+func NewExperiencesRepository(config *entity.Config, redisClient *redis.Client, db *gorm.DB) experiences.Repository {
 	return &experiencesRepo{
 		create: NewCreateRepository(config, redisClient, db),
 		update: NewUpdateRepository(config, redisClient, db),

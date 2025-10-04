@@ -5,11 +5,16 @@ import (
 	"log"
 	"net/http"
 
-	loginHandlers "github.com/jip/portfolio-backend/internal/api/login/handlers"
-	loginUseCases "github.com/jip/portfolio-backend/internal/api/login/usecases"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/labstack/echo/v4"
+
+	loginHandlers "github.com/jip/portfolio-backend/internal/api/login/handlers"
+	loginUseCases "github.com/jip/portfolio-backend/internal/api/login/usecases"
+
+	experiencesHandlers 	"github.com/jip/portfolio-backend/internal/api/experiences/handlers"
+	experiencesUseCases 	"github.com/jip/portfolio-backend/internal/api/experiences/usecases"
+	experiencesRepositories "github.com/jip/portfolio-backend/internal/api/experiences/repositories"
 )
 
 func main() {
@@ -28,7 +33,7 @@ func main() {
 		log.Fatalf("Failed to create Minio client: %s", err)
 	}
 
-	_, err = services.NewPostgresClient(config)
+	db, err := services.NewPostgresClient(config)
 	if err != nil {
 		log.Fatalf("Failed to create Postgres client: %s", err)
 	}
@@ -40,6 +45,11 @@ func main() {
 	loginUseCase := loginUseCases.NewLoginUseCase(config, redisClient)
 	loginHandler := loginHandlers.NewLoginHandler(loginUseCase)
 	loginHandlers.LoginRoutes(e.Group("/login"), loginHandler)
+
+	experiencesRepository := experiencesRepositories.NewExperiencesRepository(config, redisClient, db)
+	experiencesUseCase := experiencesUseCases.NewExperiencesUseCase(config, redisClient, experiencesRepository)
+	experiencesHandler := experiencesHandlers.NewExperiencesHandler(experiencesUseCase)
+	experiencesHandlers.ExperiencesRoutes(e.Group("/experiences"), experiencesHandler)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
