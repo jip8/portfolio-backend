@@ -3,11 +3,17 @@ package handlers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
+	portfolio "github.com/jip/portfolio-backend"
 	"github.com/jip/portfolio-backend/internal/api/experiences"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/labstack/echo/v4"
 )
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
 
 type ExperiencesHandler struct {
 	useCase experiences.UseCase
@@ -23,12 +29,12 @@ func (h *ExperiencesHandler) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var req entity.ExperienceFlat
 		if err := c.Bind(&req); err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request body"})
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidRequestBody.Error()})
 		}
 
 		resp, err := h.useCase.Create(c.Request().Context(), req)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		}
 
 		return c.JSON(http.StatusOK, resp)
@@ -39,20 +45,23 @@ func (h *ExperiencesHandler) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var req entity.ExperienceFlat
 		if err := c.Bind(&req); err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request body"})
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidRequestBody.Error()})
 		}
 
 		idStr := c.Param("id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid ID format"})
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidIDFormat.Error()})
 		}
 
 		req.Id = &id
 
 		resp, err := h.useCase.Update(c.Request().Context(), req)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			if strings.Contains(err.Error(), "not found") {
+				return c.JSON(http.StatusNotFound, ErrorResponse{Error: portfolio.ErrNotFound.Error()})
+			}
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		}
 
 		return c.JSON(http.StatusOK, resp)
@@ -64,12 +73,15 @@ func (h *ExperiencesHandler) Delete() echo.HandlerFunc {
 		idStr := c.Param("id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid ID format"})
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidIDFormat.Error()})
 		}
 
 		err = h.useCase.Delete(c.Request().Context(), id)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			if strings.Contains(err.Error(), "not found") {
+				return c.JSON(http.StatusNotFound, ErrorResponse{Error: portfolio.ErrNotFound.Error()})
+			}
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		}
 
 		return c.NoContent(http.StatusNoContent)
@@ -81,12 +93,15 @@ func (h *ExperiencesHandler) ById() echo.HandlerFunc {
 		idStr := c.Param("id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid ID format"})
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidIDFormat.Error()})
 		}
 
 		resp, err := h.useCase.GetById(c.Request().Context(), id)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			if strings.Contains(err.Error(), "not found") {
+				return c.JSON(http.StatusNotFound, ErrorResponse{Error: portfolio.ErrNotFound.Error()})
+			}
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		}
 
 		return c.JSON(http.StatusOK, resp)
@@ -101,7 +116,7 @@ func (h *ExperiencesHandler) List() echo.HandlerFunc {
 		if limitStr != "" {
 			limit, err := strconv.Atoi(limitStr)
 			if err != nil {
-				return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid 'limit' format"})
+				return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidLimitFormat.Error()})
 			}
 			req.Limit = limit
 		}
@@ -110,7 +125,7 @@ func (h *ExperiencesHandler) List() echo.HandlerFunc {
 		if offsetStr != "" {
 			offset, err := strconv.Atoi(offsetStr)
 			if err != nil {
-				return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid 'offset' format"})
+				return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidOffsetFormat.Error()})
 			}
 			req.Offset = offset
 		}
@@ -119,7 +134,7 @@ func (h *ExperiencesHandler) List() echo.HandlerFunc {
 
 		resp, err := h.useCase.GetList(c.Request().Context(), req)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		}
 
 		return c.JSON(http.StatusOK, resp)

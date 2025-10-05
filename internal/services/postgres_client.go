@@ -43,20 +43,37 @@ func NewPostgresClient(cfg *entity.Config) (*PostgresClient, error) {
 	return &PostgresClient{DB: db}, nil
 }
 
+type txWrapper struct {
+	tx      *sqlx.Tx
+	nesting int
+}
+
 func (pc *PostgresClient) StartProcess(ctx context.Context) (context.Context, error) {
+	if wrapper, ok := ctx.Value(txKey{}).(*txWrapper); ok {
+		wrapper.nesting++
+		return ctx, nil
+	}
+
 	tx, err := pc.DB.BeginTxx(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
-	return context.WithValue(ctx, txKey{}, tx), nil
+
+	return context.WithValue(ctx, txKey{}, &txWrapper{tx: tx, nesting: 1}), nil
 }
 
 func (pc *PostgresClient) CloseProcess(ctx context.Context, err error) error {
-	tx, ok := ctx.Value(txKey{}).(*sqlx.Tx)
+	wrapper, ok := ctx.Value(txKey{}).(*txWrapper)
 	if !ok {
 		return fmt.Errorf("transaction not found in context")
 	}
 
+	wrapper.nesting--
+	if wrapper.nesting > 0 {
+		return nil
+	}
+
+	tx := wrapper.tx
 	if err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {
 			return fmt.Errorf("tx err: %v, rb err: %v", err, rbErr)
@@ -67,8 +84,8 @@ func (pc *PostgresClient) CloseProcess(ctx context.Context, err error) error {
 }
 
 func (pc *PostgresClient) GetExecutor(ctx context.Context) DBTX {
-	if tx, ok := ctx.Value(txKey{}).(*sqlx.Tx); ok {
-		return tx
+	if wrapper, ok := ctx.Value(txKey{}).(*txWrapper); ok {
+		return wrapper.tx
 	}
 	return pc.DB
 }
