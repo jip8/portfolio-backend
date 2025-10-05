@@ -31,4 +31,9 @@ var (
 	ErrArticleIdIsRequired        	= errors.New("id is required")
 	ErrArticleTitleIsRequired     	= errors.New("title is required")
 	ErrArticleInvalidDate        	= errors.New("invalid date")
+
+	// Contacts
+	ErrContactIdIsRequired        	= errors.New("id is required")
+	ErrContactLinkIsRequired     	= errors.New("link is required")
+	ErrContactPlataformIsRequired 	= errors.New("plataform is required")
 )

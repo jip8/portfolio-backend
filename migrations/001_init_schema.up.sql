@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS contacts (
     link        VARCHAR(255) NOT NULL,
     plataform   VARCHAR(255) NOT NULL,
     description TEXT,
+    active      BOOLEAN DEFAULT TRUE,
+    revelance   INTEGER,
 
     updated_at  TIMESTAMP DEFAULT NOW()
 );
@@ -58,6 +60,7 @@ CREATE TABLE IF NOT EXISTS attachments (
     module          VARCHAR(64) NOT NULL,
     title           VARCHAR(255) NOT NULL,
     link            VARCHAR(255) NOT NULL,
+    content_type    VARCHAR(64),
     description     TEXT,
 
     updated_at      TIMESTAMP DEFAULT NOW()
