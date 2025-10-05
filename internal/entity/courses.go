@@ -11,6 +11,7 @@ type CourseFlat struct {
 	Description    	*string    	`json:"description" db:"description"`
 	ConcludedAtStr 	*string    	`json:"concluded_at" db:"concluded_at_str"`
 	ConcludedAt    	*time.Time 	`json:"concluded_at_time" db:"concluded_at_time"`
+	Revelance      	*int       	`json:"revelance" db:"revelance"`
 }
 
 func (c *CourseFlat) Validate() error {
@@ -30,11 +31,12 @@ func (c *CourseFlat) Validate() error {
 }
 
 type CourseResp struct {
-	Id              int        `json:"id" db:"id"`
+	Id             int        `json:"id" db:"id"`
 	Title          string     `json:"title" db:"title"`
 	Description    *string    `json:"description,omitempty" db:"description"`
 	ConcludedAtStr *string    `json:"concluded_at" db:"concluded_at_str"`
 	ConcludedAt    *time.Time `json:"concluded_at_time,omitempty" db:"concluded_at_time"`
+	Revelance      *int       `json:"revelance,omitempty" db:"revelance"`
 }
 
 func (c *CourseResp) Format() error {

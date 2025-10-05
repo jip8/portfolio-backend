@@ -4,11 +4,11 @@ import "errors"
 
 var (
 	// General
-	ErrInvalidRequestBody  = errors.New("Invalid request body")
-	ErrInvalidIDFormat     = errors.New("Invalid ID format")
-	ErrNotFound            = errors.New("Not found")
-	ErrInvalidLimitFormat  = errors.New("Invalid 'limit' format")
-	ErrInvalidOffsetFormat = errors.New("Invalid 'offset' format")
+	ErrInvalidRequestBody  = errors.New("invalid request body")
+	ErrInvalidIDFormat     = errors.New("invalid ID format")
+	ErrNotFound            = errors.New("not found")
+	ErrInvalidLimitFormat  = errors.New("invalid 'limit' format")
+	ErrInvalidOffsetFormat = errors.New("invalid 'offset' format")
 
 	// Experiences
 	ErrExperienceIdIsRequired        	= errors.New("id is required")
@@ -21,4 +21,9 @@ var (
 	ErrCourseIdIsRequired        	= errors.New("id is required")
 	ErrCourseTitleIsRequired     	= errors.New("title is required")
 	ErrCourseInvalidDate        	= errors.New("invalid date")
+
+	// Projects
+	ErrProjectIdIsRequired        	= errors.New("id is required")
+	ErrProjectTitleIsRequired     	= errors.New("title is required")
+	ErrProjectInvalidDate        	= errors.New("invalid date")
 )
