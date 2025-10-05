@@ -20,6 +20,10 @@ import (
 	coursesHandlers "github.com/jip/portfolio-backend/internal/api/courses/handlers"
 	coursesUseCases "github.com/jip/portfolio-backend/internal/api/courses/usecases"
 	coursesRepositories "github.com/jip/portfolio-backend/internal/api/courses/repositories"
+
+	projectsHandlers "github.com/jip/portfolio-backend/internal/api/projects/handlers"
+	projectsUseCases "github.com/jip/portfolio-backend/internal/api/projects/usecases"
+	projectsRepositories "github.com/jip/portfolio-backend/internal/api/projects/repositories"
 )
 
 func main() {
@@ -67,6 +71,12 @@ func main() {
 	coursesUseCase := coursesUseCases.NewUseCase(config, redisClient, coursesRepository, postgresClient)
 	coursesHandler := coursesHandlers.NewHandler(coursesUseCase)
 	coursesHandlers.Routes(e.Group("/courses"), coursesHandler, jwtMiddleware)
+
+	// Projects
+	projectsRepository := projectsRepositories.NewRepository(config, redisClient, postgresClient)
+	projectsUseCase := projectsUseCases.NewUseCase(config, redisClient, projectsRepository, postgresClient)
+	projectsHandler := projectsHandlers.NewHandler(projectsUseCase)
+	projectsHandlers.Routes(e.Group("/projects"), projectsHandler, jwtMiddleware)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
