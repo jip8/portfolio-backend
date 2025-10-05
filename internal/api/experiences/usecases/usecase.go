@@ -18,7 +18,7 @@ type experiencesUC struct {
 }
 
 
-func NewExperiencesUseCase(config *entity.Config, redisClient *redis.Client, experiencesRepo experiences.Repository, postgresClient *services.PostgresClient) experiences.UseCase {
+func NewUseCase(config *entity.Config, redisClient *redis.Client, experiencesRepo experiences.Repository, postgresClient *services.PostgresClient) experiences.UseCase {
 	byId := NewGetByIdUC(config, redisClient, experiencesRepo, postgresClient)
 
 	return &experiencesUC{

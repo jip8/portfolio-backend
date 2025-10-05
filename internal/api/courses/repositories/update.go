@@ -23,16 +23,14 @@ func NewUpdateRepository(config *entity.Config, redisClient *redis.Client, postg
 	}
 }
 
-func (r *UpdateRepository) Execute(ctx context.Context, req entity.ExperienceFlat) (*int, error) {
+func (r *UpdateRepository) Execute(ctx context.Context, req entity.CourseFlat) (*int, error) {
 	query := `
-		UPDATE portfolio.experiences
+		UPDATE portfolio.courses
 		SET
 			title = :title,
-			"function" = :function,
 			description = :description,
-			initial_date = :initial_date_time,
-			end_date = :end_date_time,
-			actual = :actual,
+			concluded_at = :concluded_at_time,
+			revelance = :revelance,
 			updated_at = NOW()
 		WHERE
 			id = :id
@@ -56,7 +54,7 @@ func (r *UpdateRepository) Execute(ctx context.Context, req entity.ExperienceFla
 	}
 
 	if rowsAffected == 0 {
-		return nil, errors.New("experience not found")
+		return nil, errors.New("course not found")
 	}
 
 	return req.Id, nil

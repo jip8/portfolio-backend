@@ -16,4 +16,9 @@ var (
 	ErrExperienceFunctionIsRequired  	= errors.New("function is required")
 	ErrExperienceDescriptionIsRequired 	= errors.New("description is required")
 	ErrExperienceInvalidDate        	= errors.New("invalid date")
+
+	// Courses
+	ErrCourseIdIsRequired        	= errors.New("id is required")
+	ErrCourseTitleIsRequired     	= errors.New("title is required")
+	ErrCourseInvalidDate        	= errors.New("invalid date")
 )

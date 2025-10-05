@@ -3,13 +3,13 @@ package repositories
 import (
 	"context"
 
-	"github.com/jip/portfolio-backend/internal/api/experiences"
+	"github.com/go-redis/redis/v8"
+	"github.com/jip/portfolio-backend/internal/api/courses"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
-	"github.com/go-redis/redis/v8"
 )
 
-type experiencesRepo struct {
+type coursesRepo struct {
 	create  *CreateRepository
 	update  *UpdateRepository
 	delete  *DeleteRepository
@@ -17,8 +17,8 @@ type experiencesRepo struct {
 	getList *GetListRepository
 }
 
-func NewRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) experiences.Repository {
-	return &experiencesRepo{
+func NewRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) courses.Repository {
+	return &coursesRepo{
 		create:  NewCreateRepository(config, redisClient, postgresClient),
 		update:  NewUpdateRepository(config, redisClient, postgresClient),
 		delete:  NewDeleteRepository(config, redisClient, postgresClient),
@@ -27,22 +27,22 @@ func NewRepository(config *entity.Config, redisClient *redis.Client, postgresCli
 	}
 }
 
-func (r *experiencesRepo) Create(ctx context.Context, req entity.ExperienceFlat) (*int, error) {
+func (r *coursesRepo) Create(ctx context.Context, req entity.CourseFlat) (*int, error) {
 	return r.create.Execute(ctx, req)
 }
 
-func (r *experiencesRepo) Update(ctx context.Context, req entity.ExperienceFlat) (*int, error) {
+func (r *coursesRepo) Update(ctx context.Context, req entity.CourseFlat) (*int, error) {
 	return r.update.Execute(ctx, req)
 }
 
-func (r *experiencesRepo) Delete(ctx context.Context, id int) error {
+func (r *coursesRepo) Delete(ctx context.Context, id int) error {
 	return r.delete.Execute(ctx, id)
 }
 
-func (r *experiencesRepo) GetById(ctx context.Context, id int) (*entity.ExperienceResp, error) {
+func (r *coursesRepo) GetById(ctx context.Context, id int) (*entity.CourseResp, error) {
 	return r.getById.Execute(ctx, id)
 }
 
-func (r *experiencesRepo) GetList(ctx context.Context, listReq entity.ListReq) (*entity.List[entity.ExperienceResp], error) {
+func (r *coursesRepo) GetList(ctx context.Context, listReq entity.ListReq) (*entity.List[entity.CourseResp], error) {
 	return r.getList.Execute(ctx, listReq)
 }

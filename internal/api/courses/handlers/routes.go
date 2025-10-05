@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"github.com/jip/portfolio-backend/internal/api/experiences"
+	"github.com/jip/portfolio-backend/internal/api/courses"
 	"github.com/labstack/echo/v4"
 )
 
-func Routes(e *echo.Group, handler experiences.Handlers, authMiddleware echo.MiddlewareFunc) {
+func Routes(e *echo.Group, handler courses.Handlers, authMiddleware echo.MiddlewareFunc) {
 	// Public routes
 	e.GET("/:id", handler.ById())
 	e.GET("", handler.List())

@@ -16,6 +16,10 @@ import (
 	experiencesHandlers "github.com/jip/portfolio-backend/internal/api/experiences/handlers"
 	experiencesUseCases "github.com/jip/portfolio-backend/internal/api/experiences/usecases"
 	experiencesRepositories "github.com/jip/portfolio-backend/internal/api/experiences/repositories"
+
+	coursesHandlers "github.com/jip/portfolio-backend/internal/api/courses/handlers"
+	coursesUseCases "github.com/jip/portfolio-backend/internal/api/courses/usecases"
+	coursesRepositories "github.com/jip/portfolio-backend/internal/api/courses/repositories"
 )
 
 func main() {
@@ -47,14 +51,22 @@ func main() {
 		SigningKey: []byte(config.JWT.Secret),
 	})
 
+	// Login
 	loginUseCase := loginUseCases.NewLoginUseCase(config, redisClient)
 	loginHandler := loginHandlers.NewLoginHandler(loginUseCase)
 	loginHandlers.LoginRoutes(e.Group("/login"), loginHandler)
 
-	experiencesRepository := experiencesRepositories.NewExperiencesRepository(config, redisClient, postgresClient)
-	experiencesUseCase := experiencesUseCases.NewExperiencesUseCase(config, redisClient, experiencesRepository, postgresClient)
-	experiencesHandler := experiencesHandlers.NewExperiencesHandler(experiencesUseCase)
-	experiencesHandlers.ExperiencesRoutes(e.Group("/experiences"), experiencesHandler, jwtMiddleware)
+	// Experiences
+	experiencesRepository := experiencesRepositories.NewRepository(config, redisClient, postgresClient)
+	experiencesUseCase := experiencesUseCases.NewUseCase(config, redisClient, experiencesRepository, postgresClient)
+	experiencesHandler := experiencesHandlers.NewHandler(experiencesUseCase)
+	experiencesHandlers.Routes(e.Group("/experiences"), experiencesHandler, jwtMiddleware)
+
+	// Courses
+	coursesRepository := coursesRepositories.NewRepository(config, redisClient, postgresClient)
+	coursesUseCase := coursesUseCases.NewUseCase(config, redisClient, coursesRepository, postgresClient)
+	coursesHandler := coursesHandlers.NewHandler(coursesUseCase)
+	coursesHandlers.Routes(e.Group("/courses"), coursesHandler, jwtMiddleware)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")

@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	portfolio "github.com/jip/portfolio-backend"
-	"github.com/jip/portfolio-backend/internal/api/experiences"
+	"github.com/jip/portfolio-backend/internal/api/courses"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/labstack/echo/v4"
 )
@@ -15,19 +15,19 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-type ExperiencesHandler struct {
-	useCase experiences.UseCase
+type CoursesHandler struct {
+	useCase courses.UseCase
 }
 
-func NewHandler(useCase experiences.UseCase) *ExperiencesHandler {
-	return &ExperiencesHandler{
+func NewHandler(useCase courses.UseCase) *CoursesHandler {
+	return &CoursesHandler{
 		useCase: useCase,
 	}
 }
 
-func (h *ExperiencesHandler) Create() echo.HandlerFunc {
+func (h *CoursesHandler) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var req entity.ExperienceFlat
+		var req entity.CourseFlat
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidRequestBody.Error()})
 		}
@@ -39,11 +39,11 @@ func (h *ExperiencesHandler) Create() echo.HandlerFunc {
 
 		return c.JSON(http.StatusOK, resp)
 	}
-} 
+}
 
-func (h *ExperiencesHandler) Update() echo.HandlerFunc {
+func (h *CoursesHandler) Update() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var req entity.ExperienceFlat
+		var req entity.CourseFlat
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidRequestBody.Error()})
 		}
@@ -68,7 +68,7 @@ func (h *ExperiencesHandler) Update() echo.HandlerFunc {
 	}
 }
 
-func (h *ExperiencesHandler) Delete() echo.HandlerFunc {
+func (h *CoursesHandler) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		idStr := c.Param("id")
 		id, err := strconv.Atoi(idStr)
@@ -88,7 +88,7 @@ func (h *ExperiencesHandler) Delete() echo.HandlerFunc {
 	}
 }
 
-func (h *ExperiencesHandler) ById() echo.HandlerFunc {
+func (h *CoursesHandler) ById() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		idStr := c.Param("id")
 		id, err := strconv.Atoi(idStr)
@@ -108,7 +108,7 @@ func (h *ExperiencesHandler) ById() echo.HandlerFunc {
 	}
 }
 
-func (h *ExperiencesHandler) List() echo.HandlerFunc {
+func (h *CoursesHandler) List() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var req entity.ListReq
 

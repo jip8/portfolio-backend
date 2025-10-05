@@ -1,0 +1,56 @@
+package usecases
+
+import (
+	"context"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/jip/portfolio-backend/internal/api/courses"
+	"github.com/jip/portfolio-backend/internal/entity"
+	"github.com/jip/portfolio-backend/internal/services"
+)
+
+type CreateUC struct {
+	config         *entity.Config
+	redisClient    *redis.Client
+	coursesRepo    courses.Repository
+	byId           *GetByIdUC
+	postgresClient *services.PostgresClient
+}
+
+func NewCreateUC(config *entity.Config, redisClient *redis.Client, coursesRepo courses.Repository, byId *GetByIdUC, postgresClient *services.PostgresClient) *CreateUC {
+	return &CreateUC{
+		config:         config,
+		redisClient:    redisClient,
+		coursesRepo:    coursesRepo,
+		byId:           byId,
+		postgresClient: postgresClient,
+	}
+}
+
+func (u *CreateUC) Execute(ctx context.Context, req entity.CourseFlat) (resp *entity.CourseResp, err error) {
+	err = req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, err = u.postgresClient.StartProcess(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err = u.postgresClient.CloseProcess(ctx, err)
+	}()
+
+	var createdId *int
+	createdId, err = u.coursesRepo.Create(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err = u.byId.Execute(ctx, *createdId)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}

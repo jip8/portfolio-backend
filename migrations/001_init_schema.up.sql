@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS experiences (
     description     TEXT,
     initial_date    DATE,
     end_date        DATE,
-    actual          BOOLEAN DEFAULT FALSE
+    actual          BOOLEAN DEFAULT FALSE,
+
+    updated_at      TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS about_text (
