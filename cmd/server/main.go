@@ -28,6 +28,10 @@ import (
 	aboutHandlers "github.com/jip/portfolio-backend/internal/api/about/handlers"
 	aboutUseCases "github.com/jip/portfolio-backend/internal/api/about/usecases"
 	aboutRepositories "github.com/jip/portfolio-backend/internal/api/about/repositories"
+
+	articlesHandlers "github.com/jip/portfolio-backend/internal/api/articles/handlers"
+	articlesUseCases "github.com/jip/portfolio-backend/internal/api/articles/usecases"
+	articlesRepositories "github.com/jip/portfolio-backend/internal/api/articles/repositories"
 )
 
 func main() {
@@ -87,6 +91,12 @@ func main() {
 	aboutUseCase := aboutUseCases.NewUseCase(config, redisClient, aboutRepository, postgresClient)
 	aboutHandler := aboutHandlers.NewHandler(aboutUseCase)
 	aboutHandlers.Routes(e.Group("/about"), aboutHandler, jwtMiddleware)
+
+	// Articles
+	articlesRepository := articlesRepositories.NewRepository(config, redisClient, postgresClient)
+	articlesUseCase := articlesUseCases.NewUseCase(config, redisClient, articlesRepository, postgresClient)
+	articlesHandler := articlesHandlers.NewHandler(articlesUseCase)
+	articlesHandlers.Routes(e.Group("/articles"), articlesHandler, jwtMiddleware)
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")

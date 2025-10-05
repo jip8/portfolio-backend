@@ -26,4 +26,9 @@ var (
 	ErrProjectIdIsRequired        	= errors.New("id is required")
 	ErrProjectTitleIsRequired     	= errors.New("title is required")
 	ErrProjectInvalidDate        	= errors.New("invalid date")
+
+	// Articles
+	ErrArticleIdIsRequired        	= errors.New("id is required")
+	ErrArticleTitleIsRequired     	= errors.New("title is required")
+	ErrArticleInvalidDate        	= errors.New("invalid date")
 )
