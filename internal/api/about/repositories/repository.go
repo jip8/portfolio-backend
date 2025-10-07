@@ -3,7 +3,6 @@ package repositories
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/api/about"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
@@ -14,10 +13,10 @@ type aboutRepo struct {
 	get    *GetRepository
 }
 
-func NewRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) about.Repository {
+func NewRepository(config *entity.Config, postgresClient *services.PostgresClient) about.Repository {
 	return &aboutRepo{
-		update: NewUpdateRepository(config, redisClient, postgresClient),
-		get:    NewGetRepository(config, redisClient, postgresClient),
+		update: NewUpdateRepository(config, postgresClient),
+		get:    NewGetRepository(config, postgresClient),
 	}
 }
 

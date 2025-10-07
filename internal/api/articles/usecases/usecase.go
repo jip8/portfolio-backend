@@ -3,7 +3,6 @@ package usecases
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/api/articles"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
@@ -17,15 +16,15 @@ type articlesUC struct {
 	getList *GetListUC
 }
 
-func NewUseCase(config *entity.Config, redisClient *redis.Client, articlesRepo articles.Repository, postgresClient *services.PostgresClient) articles.UseCase {
-	byId := NewGetByIdUC(config, redisClient, articlesRepo, postgresClient)
+func NewUseCase(config *entity.Config,  articlesRepo articles.Repository, postgresClient *services.PostgresClient) articles.UseCase {
+	byId := NewGetByIdUC(config, articlesRepo, postgresClient)
 
 	return &articlesUC{
-		create:  NewCreateUC(config, redisClient, articlesRepo, byId, postgresClient),
-		update:  NewUpdateUC(config, redisClient, articlesRepo, byId, postgresClient),
-		delete:  NewDeleteUC(config, redisClient, articlesRepo, postgresClient),
+		create:  NewCreateUC(config, articlesRepo, byId, postgresClient),
+		update:  NewUpdateUC(config, articlesRepo, byId, postgresClient),
+		delete:  NewDeleteUC(config, articlesRepo, postgresClient),
 		getById: byId,
-		getList: NewGetListUC(config, redisClient, articlesRepo, postgresClient),
+		getList: NewGetListUC(config, articlesRepo, postgresClient),
 	}
 }
 

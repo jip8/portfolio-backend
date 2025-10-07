@@ -16,10 +16,9 @@ type GetListRepository struct {
 	postgresClient *services.PostgresClient
 }
 
-func NewGetListRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *GetListRepository {
+func NewGetListRepository(config *entity.Config, postgresClient *services.PostgresClient) *GetListRepository {
 	return &GetListRepository{
 		config:         config,
-		redisClient:    redisClient,
 		postgresClient: postgresClient,
 	}
 }

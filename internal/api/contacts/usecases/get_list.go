@@ -16,10 +16,9 @@ type GetListUC struct {
 	postgresClient *services.PostgresClient
 }
 
-func NewGetListUC(config *entity.Config, redisClient *redis.Client, contactsRepo contacts.Repository, postgresClient *services.PostgresClient) *GetListUC {
+func NewGetListUC(config *entity.Config,  contactsRepo contacts.Repository, postgresClient *services.PostgresClient) *GetListUC {
 	return &GetListUC{
 		config:         config,
-		redisClient:    redisClient,
 		contactsRepo:   contactsRepo,
 		postgresClient: postgresClient,
 	}

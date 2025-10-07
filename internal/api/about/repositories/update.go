@@ -4,21 +4,18 @@ import (
 	"context"
 	"errors"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 )
 
 type UpdateRepository struct {
 	config         *entity.Config
-	redisClient    *redis.Client
 	postgresClient *services.PostgresClient
 }
 
-func NewUpdateRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *UpdateRepository {
+func NewUpdateRepository(config *entity.Config, postgresClient *services.PostgresClient) *UpdateRepository {
 	return &UpdateRepository{
 		config:         config,
-		redisClient:    redisClient,
 		postgresClient: postgresClient,
 	}
 }

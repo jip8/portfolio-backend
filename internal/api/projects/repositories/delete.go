@@ -3,21 +3,18 @@ package repositories
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 )
 
 type DeleteRepository struct {
 	config         *entity.Config
-	redisClient    *redis.Client
 	postgresClient *services.PostgresClient
 }
 
-func NewDeleteRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *DeleteRepository {
+func NewDeleteRepository(config *entity.Config, postgresClient *services.PostgresClient) *DeleteRepository {
 	return &DeleteRepository{
 		config:         config,
-		redisClient:    redisClient,
 		postgresClient: postgresClient,
 	}
 }

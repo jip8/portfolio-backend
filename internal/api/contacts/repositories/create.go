@@ -3,21 +3,18 @@ package repositories
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 )
 
 type CreateRepository struct {
 	config         *entity.Config
-	redisClient    *redis.Client
 	postgresClient *services.PostgresClient
 }
 
-func NewCreateRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *CreateRepository {
+func NewCreateRepository(config *entity.Config,  postgresClient *services.PostgresClient) *CreateRepository {
 	return &CreateRepository{
 		config:         config,
-		redisClient:    redisClient,
 		postgresClient: postgresClient,
 	}
 }

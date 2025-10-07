@@ -3,7 +3,6 @@ package usecases
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/api/about"
 	"github.com/jip/portfolio-backend/internal/entity"
 
@@ -12,16 +11,14 @@ import (
 
 type UpdateUC struct {
 	config         *entity.Config
-	redisClient    *redis.Client
 	aboutRepo      about.Repository
 	get           *GetUC
 	postgresClient *services.PostgresClient
 }
 
-func NewUpdateUC(config *entity.Config, redisClient *redis.Client, aboutRepo about.Repository, get *GetUC, postgresClient *services.PostgresClient) *UpdateUC {
+func NewUpdateUC(config *entity.Config, aboutRepo about.Repository, get *GetUC, postgresClient *services.PostgresClient) *UpdateUC {
 	return &UpdateUC{
 		config:         config,
-		redisClient:    redisClient,
 		aboutRepo:      aboutRepo,
 		get:           get,
 		postgresClient: postgresClient,

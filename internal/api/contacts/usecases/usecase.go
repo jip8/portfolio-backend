@@ -3,7 +3,6 @@ package usecases
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/api/contacts"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
@@ -17,15 +16,15 @@ type contactsUC struct {
 	getList *GetListUC
 }
 
-func NewUseCase(config *entity.Config, redisClient *redis.Client, contactsRepo contacts.Repository, postgresClient *services.PostgresClient) contacts.UseCase {
-	byId := NewGetByIdUC(config, redisClient, contactsRepo, postgresClient)
+func NewUseCase(config *entity.Config, contactsRepo contacts.Repository, postgresClient *services.PostgresClient) contacts.UseCase {
+	byId := NewGetByIdUC(config, contactsRepo, postgresClient)
 
 	return &contactsUC{
-		create:  NewCreateUC(config, redisClient, contactsRepo, byId, postgresClient),
-		update:  NewUpdateUC(config, redisClient, contactsRepo, byId, postgresClient),
-		delete:  NewDeleteUC(config, redisClient, contactsRepo, postgresClient),
+		create:  NewCreateUC(config, contactsRepo, byId, postgresClient),
+		update:  NewUpdateUC(config, contactsRepo, byId, postgresClient),
+		delete:  NewDeleteUC(config, contactsRepo, postgresClient),
 		getById: byId,
-		getList: NewGetListUC(config, redisClient, contactsRepo, postgresClient),
+		getList: NewGetListUC(config, contactsRepo, postgresClient),
 	}
 }
 

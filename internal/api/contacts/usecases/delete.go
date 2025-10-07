@@ -3,7 +3,6 @@ package usecases
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/api/contacts"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
@@ -11,15 +10,13 @@ import (
 
 type DeleteUC struct {
 	config         *entity.Config
-	redisClient    *redis.Client
 	contactsRepo   contacts.Repository
 	postgresClient *services.PostgresClient
 }
 
-func NewDeleteUC(config *entity.Config, redisClient *redis.Client, contactsRepo contacts.Repository, postgresClient *services.PostgresClient) *DeleteUC {
+func NewDeleteUC(config *entity.Config, contactsRepo contacts.Repository, postgresClient *services.PostgresClient) *DeleteUC {
 	return &DeleteUC{
 		config:         config,
-		redisClient:    redisClient,
 		contactsRepo:   contactsRepo,
 		postgresClient: postgresClient,
 	}

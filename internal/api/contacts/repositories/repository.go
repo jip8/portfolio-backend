@@ -3,7 +3,6 @@ package repositories
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/api/contacts"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
@@ -17,13 +16,13 @@ type contactsRepo struct {
 	getList *GetListRepository
 }
 
-func NewRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) contacts.Repository {
+func NewRepository(config *entity.Config, postgresClient *services.PostgresClient) contacts.Repository {
 	return &contactsRepo{
-		create:  NewCreateRepository(config, redisClient, postgresClient),
-		update:  NewUpdateRepository(config, redisClient, postgresClient),
-		delete:  NewDeleteRepository(config, redisClient, postgresClient),
-		getById: NewGetByIdRepository(config, redisClient, postgresClient),
-		getList: NewGetListRepository(config, redisClient, postgresClient),
+		create:  NewCreateRepository(config, postgresClient),
+		update:  NewUpdateRepository(config, postgresClient),
+		delete:  NewDeleteRepository(config, postgresClient),
+		getById: NewGetByIdRepository(config, postgresClient),
+		getList: NewGetListRepository(config, postgresClient),
 	}
 }
 

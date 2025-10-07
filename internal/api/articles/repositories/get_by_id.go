@@ -3,21 +3,18 @@ package repositories
 import (
 	"context"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 )
 
 type GetByIdRepository struct {
 	config         *entity.Config
-	redisClient    *redis.Client
 	postgresClient *services.PostgresClient
 }
 
-func NewGetByIdRepository(config *entity.Config, redisClient *redis.Client, postgresClient *services.PostgresClient) *GetByIdRepository {
+func NewGetByIdRepository(config *entity.Config,  postgresClient *services.PostgresClient) *GetByIdRepository {
 	return &GetByIdRepository{
 		config:         config,
-		redisClient:    redisClient,
 		postgresClient: postgresClient,
 	}
 }
