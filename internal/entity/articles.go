@@ -38,10 +38,10 @@ type ArticleResp struct {
 	Title          	string     		`json:"title" db:"title"`
 	Description    	*string    		`json:"description" db:"description"`
 	Local           *string    		`json:"local" db:"local"`
-	PublishedAtStr 	*string    		`json:"published_at" db:"published_at_str"`
-	PublishedAt    	*time.Time 		`json:"published_at_time" db:"published_at_time"`
-	Revelance      	*int       		`json:"revelance" db:"revelance"`
-	LinksRespArray  LinkRespArray 	`json:"links" db:"-"`
+	PublishedAtStr 	*string    		`json:"published_at,omitempty" db:"published_at_str"`
+	PublishedAt    	*time.Time 		`json:"published_at_time,omitempty" db:"published_at_time"`
+	Revelance      	*int       		`json:"revelance,omitempty" db:"revelance"`
+	LinksRespArray  LinkRespArray 	`json:"links,omitempty" db:"-"`
 }
 
 func (c *ArticleResp) Format() error {
