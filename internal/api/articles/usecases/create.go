@@ -6,6 +6,7 @@ import (
 	"github.com/jip/portfolio-backend/internal/api/articles"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
+	"github.com/jip/portfolio-backend/internal/api/links"
 )
 
 type CreateUC struct {
@@ -13,14 +14,16 @@ type CreateUC struct {
 	articlesRepo   articles.Repository
 	byId           *GetByIdUC
 	postgresClient *services.PostgresClient
+	linksUC        links.UseCase
 }
 
-func NewCreateUC(config *entity.Config, articlesRepo articles.Repository, byId *GetByIdUC, postgresClient *services.PostgresClient) *CreateUC {
+func NewCreateUC(config *entity.Config, articlesRepo articles.Repository, byId *GetByIdUC, postgresClient *services.PostgresClient, linksUC links.UseCase) *CreateUC {
 	return &CreateUC{
 		config:         config,
 		articlesRepo:   articlesRepo,
 		byId:           byId,
 		postgresClient: postgresClient,
+		linksUC:        linksUC,
 	}
 }
 

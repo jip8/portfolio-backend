@@ -6,19 +6,22 @@ import (
 	"github.com/jip/portfolio-backend/internal/api/projects"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
+	"github.com/jip/portfolio-backend/internal/api/links"
 )
 
 type GetByIdUC struct {
 	config         *entity.Config
 	projectsRepo   projects.Repository
 	postgresClient *services.PostgresClient
+	linksUC        links.UseCase
 }
 
-func NewGetByIdUC(config *entity.Config, projectsRepo projects.Repository, postgresClient *services.PostgresClient) *GetByIdUC {
+func NewGetByIdUC(config *entity.Config, projectsRepo projects.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase) *GetByIdUC {
 	return &GetByIdUC{
 		config:         config,
 		projectsRepo:   projectsRepo,
 		postgresClient: postgresClient,
+		linksUC:        linksUC,
 	}
 }
 
@@ -35,6 +38,13 @@ func (u *GetByIdUC) Execute(ctx context.Context, id int) (*entity.ProjectResp, e
 			return nil, err
 		}
 	}
+
+	links, err := u.linksUC.GetListById(ctx, ModuleName, id)
+	if err != nil {
+		return nil, err
+	}
+
+	resp.LinksRespArray = links
 
 	return resp, nil
 }

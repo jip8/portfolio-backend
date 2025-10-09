@@ -6,6 +6,11 @@ import (
 	"github.com/jip/portfolio-backend/internal/api/projects"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
+	"github.com/jip/portfolio-backend/internal/api/links"
+)
+
+var (
+	ModuleName = "projects"
 )
 
 type projectsUC struct {
@@ -16,13 +21,13 @@ type projectsUC struct {
 	getList *GetListUC
 }
 
-func NewUseCase(config *entity.Config, projectsRepo projects.Repository, postgresClient *services.PostgresClient) projects.UseCase {
-	byId := NewGetByIdUC(config, projectsRepo, postgresClient)
+func NewUseCase(config *entity.Config, projectsRepo projects.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase) projects.UseCase {
+	byId := NewGetByIdUC(config, projectsRepo, postgresClient, linksUC)
 
 	return &projectsUC{
-		create:  NewCreateUC(config, projectsRepo, byId, postgresClient),
-		update:  NewUpdateUC(config, projectsRepo, byId, postgresClient),
-		delete:  NewDeleteUC(config, projectsRepo, postgresClient),
+		create:  NewCreateUC(config, projectsRepo, byId, postgresClient, linksUC),
+		update:  NewUpdateUC(config, projectsRepo, byId, postgresClient, linksUC),
+		delete:  NewDeleteUC(config, projectsRepo, postgresClient, linksUC),
 		getById: byId,
 		getList: NewGetListUC(config, projectsRepo, postgresClient),
 	}

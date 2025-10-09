@@ -6,6 +6,11 @@ import (
 	"github.com/jip/portfolio-backend/internal/api/articles"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
+	"github.com/jip/portfolio-backend/internal/api/links"
+)
+
+var (
+	ModuleName = "articles"
 )
 
 type articlesUC struct {
@@ -16,13 +21,13 @@ type articlesUC struct {
 	getList *GetListUC
 }
 
-func NewUseCase(config *entity.Config,  articlesRepo articles.Repository, postgresClient *services.PostgresClient) articles.UseCase {
-	byId := NewGetByIdUC(config, articlesRepo, postgresClient)
+func NewUseCase(config *entity.Config,  articlesRepo articles.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase) articles.UseCase {
+	byId := NewGetByIdUC(config, articlesRepo, postgresClient, linksUC)
 
 	return &articlesUC{
-		create:  NewCreateUC(config, articlesRepo, byId, postgresClient),
-		update:  NewUpdateUC(config, articlesRepo, byId, postgresClient),
-		delete:  NewDeleteUC(config, articlesRepo, postgresClient),
+		create:  NewCreateUC(config, articlesRepo, byId, postgresClient, linksUC),
+		update:  NewUpdateUC(config, articlesRepo, byId, postgresClient, linksUC),
+		delete:  NewDeleteUC(config, articlesRepo, postgresClient, linksUC),
 		getById: byId,
 		getList: NewGetListUC(config, articlesRepo, postgresClient),
 	}

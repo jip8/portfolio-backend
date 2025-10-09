@@ -36,6 +36,9 @@ import (
 	contactsHandlers "github.com/jip/portfolio-backend/internal/api/contacts/handlers"
 	contactsUseCases "github.com/jip/portfolio-backend/internal/api/contacts/usecases"
 	contactsRepositories "github.com/jip/portfolio-backend/internal/api/contacts/repositories"
+
+	linksUseCases "github.com/jip/portfolio-backend/internal/api/links/usecases"
+	linksRepositories "github.com/jip/portfolio-backend/internal/api/links/repositories"
 )
 
 func main() {
@@ -72,41 +75,46 @@ func main() {
 	loginHandler := loginHandlers.NewLoginHandler(loginUseCase)
 	loginHandlers.LoginRoutes(e.Group("/login"), loginHandler)
 
-	// Experiences
-	experiencesRepository := experiencesRepositories.NewRepository(config, postgresClient)
-	experiencesUseCase := experiencesUseCases.NewUseCase(config, experiencesRepository, postgresClient)
-	experiencesHandler := experiencesHandlers.NewHandler(experiencesUseCase)
-	experiencesHandlers.Routes(e.Group("/experiences"), experiencesHandler, jwtMiddleware)
-
-	// Courses
-	coursesRepository := coursesRepositories.NewRepository(config, postgresClient)
-	coursesUseCase := coursesUseCases.NewUseCase(config, coursesRepository, postgresClient)
-	coursesHandler := coursesHandlers.NewHandler(coursesUseCase)
-	coursesHandlers.Routes(e.Group("/courses"), coursesHandler, jwtMiddleware)
-
-	// Projects
-	projectsRepository := projectsRepositories.NewRepository(config, postgresClient)
-	projectsUseCase := projectsUseCases.NewUseCase(config, projectsRepository, postgresClient)
-	projectsHandler := projectsHandlers.NewHandler(projectsUseCase)
-	projectsHandlers.Routes(e.Group("/projects"), projectsHandler, jwtMiddleware)
-
 	// About
 	aboutRepository := aboutRepositories.NewRepository(config, postgresClient)
 	aboutUseCase := aboutUseCases.NewUseCase(config, aboutRepository, postgresClient)
 	aboutHandler := aboutHandlers.NewHandler(aboutUseCase)
 	aboutHandlers.Routes(e.Group("/about"), aboutHandler, jwtMiddleware)
 
-	// Articles
-	articlesRepository := articlesRepositories.NewRepository(config, postgresClient)
-	articlesUseCase := articlesUseCases.NewUseCase(config, articlesRepository, postgresClient)
-	articlesHandler := articlesHandlers.NewHandler(articlesUseCase)
-	articlesHandlers.Routes(e.Group("/articles"), articlesHandler, jwtMiddleware)
-
 	// Contacts
 	contactsRepository := contactsRepositories.NewRepository(config, postgresClient)
 	contactsUseCase := contactsUseCases.NewUseCase(config, contactsRepository, postgresClient)
 	contactsHandler := contactsHandlers.NewHandler(contactsUseCase)
 	contactsHandlers.Routes(e.Group("/contacts"), contactsHandler, jwtMiddleware)
+
+	// Courses
+	coursesRepository := coursesRepositories.NewRepository(config, postgresClient)
+	coursesUseCase := coursesUseCases.NewUseCase(config, coursesRepository, postgresClient)
+	coursesHandler := coursesHandlers.NewHandler(coursesUseCase)
+	coursesHandlers.Routes(e.Group("/courses"), coursesHandler, jwtMiddleware)
+	
+	// Experiences
+	experiencesRepository := experiencesRepositories.NewRepository(config, postgresClient)
+	experiencesUseCase := experiencesUseCases.NewUseCase(config, experiencesRepository, postgresClient)
+	experiencesHandler := experiencesHandlers.NewHandler(experiencesUseCase)
+	experiencesHandlers.Routes(e.Group("/experiences"), experiencesHandler, jwtMiddleware)
+
+	// Links
+	linksRepository := linksRepositories.NewRepository(config, postgresClient)
+	linksUseCase := linksUseCases.NewUseCase(config, linksRepository, postgresClient)
+
+	// Articles
+	articlesRepository := articlesRepositories.NewRepository(config, postgresClient)
+	articlesUseCase := articlesUseCases.NewUseCase(config, articlesRepository, postgresClient, linksUseCase)
+	articlesHandler := articlesHandlers.NewHandler(articlesUseCase)
+	articlesHandlers.Routes(e.Group("/articles"), articlesHandler, jwtMiddleware)
+
+	// Projects
+	projectsRepository := projectsRepositories.NewRepository(config, postgresClient)
+	projectsUseCase := projectsUseCases.NewUseCase(config, projectsRepository, postgresClient, linksUseCase)
+	projectsHandler := projectsHandlers.NewHandler(projectsUseCase)
+	projectsHandlers.Routes(e.Group("/projects"), projectsHandler, jwtMiddleware)
+
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")

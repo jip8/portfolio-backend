@@ -8,6 +8,7 @@ import (
 
 	"github.com/jip/portfolio-backend"
 	"github.com/jip/portfolio-backend/internal/services"
+	"github.com/jip/portfolio-backend/internal/api/links"
 )
 
 type UpdateUC struct {
@@ -15,14 +16,16 @@ type UpdateUC struct {
 	projectsRepo   projects.Repository
 	byId           *GetByIdUC
 	postgresClient *services.PostgresClient
+	linksUC        links.UseCase
 }
 
-func NewUpdateUC(config *entity.Config, projectsRepo projects.Repository, byId *GetByIdUC, postgresClient *services.PostgresClient) *UpdateUC {
+func NewUpdateUC(config *entity.Config, projectsRepo projects.Repository, byId *GetByIdUC, postgresClient *services.PostgresClient, linksUC links.UseCase) *UpdateUC {
 	return &UpdateUC{
 		config:         config,
 		projectsRepo:   projectsRepo,
 		byId:           byId,
 		postgresClient: postgresClient,
+		linksUC:        linksUC,
 	}
 }
 
@@ -46,6 +49,11 @@ func (u *UpdateUC) Execute(ctx context.Context, req entity.ProjectFlat) (resp *e
 
 	var updatedId *int
 	updatedId, err = u.projectsRepo.Update(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	err = u.linksUC.Upsert(ctx, req.LinksArray)
 	if err != nil {
 		return nil, err
 	}

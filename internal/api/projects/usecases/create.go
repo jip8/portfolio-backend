@@ -6,6 +6,7 @@ import (
 	"github.com/jip/portfolio-backend/internal/api/projects"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
+	"github.com/jip/portfolio-backend/internal/api/links"
 )
 
 type CreateUC struct {
@@ -13,14 +14,16 @@ type CreateUC struct {
 	projectsRepo   projects.Repository
 	byId           *GetByIdUC
 	postgresClient *services.PostgresClient
+	linksUC        links.UseCase
 }
 
-func NewCreateUC(config *entity.Config, projectsRepo projects.Repository, byId *GetByIdUC, postgresClient *services.PostgresClient) *CreateUC {
+func NewCreateUC(config *entity.Config, projectsRepo projects.Repository, byId *GetByIdUC, postgresClient *services.PostgresClient, linksUC links.UseCase) *CreateUC {
 	return &CreateUC{
 		config:         config,
 		projectsRepo:   projectsRepo,
 		byId:           byId,
 		postgresClient: postgresClient,
+		linksUC:        linksUC,
 	}
 }
 
@@ -40,6 +43,11 @@ func (u *CreateUC) Execute(ctx context.Context, req entity.ProjectFlat) (resp *e
 
 	var createdId *int
 	createdId, err = u.projectsRepo.Create(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	err = u.linksUC.Upsert(ctx, req.LinksArray)
 	if err != nil {
 		return nil, err
 	}
