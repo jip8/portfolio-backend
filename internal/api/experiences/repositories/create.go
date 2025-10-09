@@ -1,0 +1,45 @@
+package repositories
+
+import (
+	"context"
+
+	"github.com/jip/portfolio-backend/internal/entity"
+	"github.com/jip/portfolio-backend/internal/services"
+)
+
+type CreateRepository struct {
+	config         *entity.Config
+	postgresClient *services.PostgresClient
+}
+
+func NewCreateRepository(config *entity.Config, postgresClient *services.PostgresClient) *CreateRepository {
+	return &CreateRepository{
+		config:         config,
+		postgresClient: postgresClient,
+	}
+}
+
+func (r *CreateRepository) Execute(ctx context.Context, req entity.ExperienceFlat) (*int, error) {
+	query := `
+		INSERT INTO portfolio.experiences 
+			(title, "function", description, initial_date, end_date, actual)
+		VALUES 
+			(:title, :function, :description, :initial_date_time, :end_date_time, :actual)
+		RETURNING id
+	`
+
+	executor := r.postgresClient.GetExecutor(ctx)
+
+	namedQuery, args, err := executor.BindNamed(query, req)
+	if err != nil {
+		return nil, err
+	}
+
+	var newID int
+	err = executor.QueryRowContext(ctx, namedQuery, args...).Scan(&newID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &newID, nil
+}

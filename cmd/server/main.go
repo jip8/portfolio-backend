@@ -5,11 +5,40 @@ import (
 	"log"
 	"net/http"
 
-	loginHandlers "github.com/jip/portfolio-backend/internal/api/login/handlers"
-	loginUseCases "github.com/jip/portfolio-backend/internal/api/login/usecases"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo-jwt/v4"
+
+	loginHandlers "github.com/jip/portfolio-backend/internal/api/login/handlers"
+	loginUseCases "github.com/jip/portfolio-backend/internal/api/login/usecases"
+
+	experiencesHandlers "github.com/jip/portfolio-backend/internal/api/experiences/handlers"
+	experiencesUseCases "github.com/jip/portfolio-backend/internal/api/experiences/usecases"
+	experiencesRepositories "github.com/jip/portfolio-backend/internal/api/experiences/repositories"
+
+	coursesHandlers "github.com/jip/portfolio-backend/internal/api/courses/handlers"
+	coursesUseCases "github.com/jip/portfolio-backend/internal/api/courses/usecases"
+	coursesRepositories "github.com/jip/portfolio-backend/internal/api/courses/repositories"
+
+	projectsHandlers "github.com/jip/portfolio-backend/internal/api/projects/handlers"
+	projectsUseCases "github.com/jip/portfolio-backend/internal/api/projects/usecases"
+	projectsRepositories "github.com/jip/portfolio-backend/internal/api/projects/repositories"
+
+	aboutHandlers "github.com/jip/portfolio-backend/internal/api/about/handlers"
+	aboutUseCases "github.com/jip/portfolio-backend/internal/api/about/usecases"
+	aboutRepositories "github.com/jip/portfolio-backend/internal/api/about/repositories"
+
+	articlesHandlers "github.com/jip/portfolio-backend/internal/api/articles/handlers"
+	articlesUseCases "github.com/jip/portfolio-backend/internal/api/articles/usecases"
+	articlesRepositories "github.com/jip/portfolio-backend/internal/api/articles/repositories"
+
+	contactsHandlers "github.com/jip/portfolio-backend/internal/api/contacts/handlers"
+	contactsUseCases "github.com/jip/portfolio-backend/internal/api/contacts/usecases"
+	contactsRepositories "github.com/jip/portfolio-backend/internal/api/contacts/repositories"
+
+	linksUseCases "github.com/jip/portfolio-backend/internal/api/links/usecases"
+	linksRepositories "github.com/jip/portfolio-backend/internal/api/links/repositories"
 )
 
 func main() {
@@ -28,7 +57,7 @@ func main() {
 		log.Fatalf("Failed to create Minio client: %s", err)
 	}
 
-	_, err = services.NewPostgresClient(config)
+	postgresClient, err := services.NewPostgresClient(config)
 	if err != nil {
 		log.Fatalf("Failed to create Postgres client: %s", err)
 	}
@@ -37,9 +66,55 @@ func main() {
 
 	e := echo.New()
 
+	jwtMiddleware := echojwt.WithConfig(echojwt.Config{
+		SigningKey: []byte(config.JWT.Secret),
+	})
+
+	// Login
 	loginUseCase := loginUseCases.NewLoginUseCase(config, redisClient)
 	loginHandler := loginHandlers.NewLoginHandler(loginUseCase)
 	loginHandlers.LoginRoutes(e.Group("/login"), loginHandler)
+
+	// About
+	aboutRepository := aboutRepositories.NewRepository(config, postgresClient)
+	aboutUseCase := aboutUseCases.NewUseCase(config, aboutRepository, postgresClient)
+	aboutHandler := aboutHandlers.NewHandler(aboutUseCase)
+	aboutHandlers.Routes(e.Group("/about"), aboutHandler, jwtMiddleware)
+
+	// Contacts
+	contactsRepository := contactsRepositories.NewRepository(config, postgresClient)
+	contactsUseCase := contactsUseCases.NewUseCase(config, contactsRepository, postgresClient)
+	contactsHandler := contactsHandlers.NewHandler(contactsUseCase)
+	contactsHandlers.Routes(e.Group("/contacts"), contactsHandler, jwtMiddleware)
+
+	// Courses
+	coursesRepository := coursesRepositories.NewRepository(config, postgresClient)
+	coursesUseCase := coursesUseCases.NewUseCase(config, coursesRepository, postgresClient)
+	coursesHandler := coursesHandlers.NewHandler(coursesUseCase)
+	coursesHandlers.Routes(e.Group("/courses"), coursesHandler, jwtMiddleware)
+	
+	// Experiences
+	experiencesRepository := experiencesRepositories.NewRepository(config, postgresClient)
+	experiencesUseCase := experiencesUseCases.NewUseCase(config, experiencesRepository, postgresClient)
+	experiencesHandler := experiencesHandlers.NewHandler(experiencesUseCase)
+	experiencesHandlers.Routes(e.Group("/experiences"), experiencesHandler, jwtMiddleware)
+
+	// Links
+	linksRepository := linksRepositories.NewRepository(config, postgresClient)
+	linksUseCase := linksUseCases.NewUseCase(config, linksRepository, postgresClient)
+
+	// Articles
+	articlesRepository := articlesRepositories.NewRepository(config, postgresClient)
+	articlesUseCase := articlesUseCases.NewUseCase(config, articlesRepository, postgresClient, linksUseCase)
+	articlesHandler := articlesHandlers.NewHandler(articlesUseCase)
+	articlesHandlers.Routes(e.Group("/articles"), articlesHandler, jwtMiddleware)
+
+	// Projects
+	projectsRepository := projectsRepositories.NewRepository(config, postgresClient)
+	projectsUseCase := projectsUseCases.NewUseCase(config, projectsRepository, postgresClient, linksUseCase)
+	projectsHandler := projectsHandlers.NewHandler(projectsUseCase)
+	projectsHandlers.Routes(e.Group("/projects"), projectsHandler, jwtMiddleware)
+
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")

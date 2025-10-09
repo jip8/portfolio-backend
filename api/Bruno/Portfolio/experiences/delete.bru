@@ -1,0 +1,23 @@
+meta {
+  name: delete
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/experiences/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 3
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+settings {
+  encodeUrl: true
+}
