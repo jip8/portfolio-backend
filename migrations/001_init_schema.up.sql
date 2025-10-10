@@ -46,14 +46,12 @@ CREATE TABLE IF NOT EXISTS links (
     id              SERIAL PRIMARY KEY,
     parent_id       INTEGER NOT NULL,
     module          VARCHAR(64) NOT NULL,
-    title           VARCHAR(255) NOT NULL,
+    title           VARCHAR(255),
     link            VARCHAR(255) NOT NULL,
     revelance       INTEGER,
     description     TEXT,
 
     updated_at      TIMESTAMP DEFAULT NOW(),
-
-    UNIQUE(parent_id, module, title)
 );
 
 CREATE TABLE IF NOT EXISTS attachments (
@@ -61,7 +59,7 @@ CREATE TABLE IF NOT EXISTS attachments (
     parent_id       INTEGER NOT NULL,
     module          VARCHAR(64) NOT NULL,
     title           VARCHAR(255) NOT NULL,
-    link            VARCHAR(255) NOT NULL,
+    url             VARCHAR(255) NOT NULL,
     content_type    VARCHAR(64),
     description     TEXT,
 

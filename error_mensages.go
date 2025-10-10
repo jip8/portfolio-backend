@@ -39,7 +39,8 @@ var (
 
 	// Links
 	ErrLinkIdIsRequired        	= errors.New("id is required")
-	ErrLinkParentIdIsRequired   = errors.New("parent_id is required")
-	ErrLinkModuleIsRequired     = errors.New("module is required")
 	ErrLinkLinkIsRequired     	= errors.New("link is required")
+
+	// Attachments
+	ErrAttachmentIdIsRequired        	= errors.New("id is required")
 )

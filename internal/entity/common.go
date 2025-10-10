@@ -24,4 +24,3 @@ func (r *ListReq) Process() {
 		r.Order = "id ASC"
 	}
 }
-
