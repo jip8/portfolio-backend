@@ -32,13 +32,14 @@ func (c *ProjectFlat) Validate() error {
 }
 
 type ProjectResp struct {
-	Id             int        		`json:"id" db:"id"`
-	Title          string     		`json:"title" db:"title"`
-	Description    *string    		`json:"description,omitempty" db:"description"`
-	PublishedAtStr *string    		`json:"concluded_at" db:"concluded_at_str"`
-	PublishedAt    *time.Time 		`json:"concluded_at_time,omitempty" db:"concluded_at_time"`
-	Revelance      *int       		`json:"revelance,omitempty" db:"revelance"`
-	LinksRespArray LinkRespArray 	`json:"links" db:"-"`
+	Id             int        			`json:"id" db:"id"`
+	Title          string     			`json:"title" db:"title"`
+	Description    *string    			`json:"description,omitempty" db:"description"`
+	PublishedAtStr *string    			`json:"concluded_at" db:"concluded_at_str"`
+	PublishedAt    *time.Time 			`json:"concluded_at_time,omitempty" db:"concluded_at_time"`
+	Revelance      *int       			`json:"revelance,omitempty" db:"revelance"`
+	LinksRespArray LinkRespArray 		`json:"links" db:"-"`
+	Attachments    *AttachmentRespArray `json:"attachments,omitempty" db:"-"`
 }
 
 func (c *ProjectResp) Format() error {

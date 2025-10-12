@@ -7,6 +7,7 @@ import (
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/jip/portfolio-backend/internal/api/links"
+	"github.com/jip/portfolio-backend/internal/api/attachments"
 )
 
 type GetByIdUC struct {
@@ -14,15 +15,16 @@ type GetByIdUC struct {
 	articlesRepo   articles.Repository
 	postgresClient *services.PostgresClient
 	linksUC        links.UseCase
-
+	attachmentsUC  attachments.UseCase
 }
 
-func NewGetByIdUC(config *entity.Config, articlesRepo articles.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase) *GetByIdUC {
+func NewGetByIdUC(config *entity.Config, articlesRepo articles.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase, attachmentUC attachments.UseCase) *GetByIdUC {
 	return &GetByIdUC{
 		config:         config,
 		articlesRepo:   articlesRepo,
 		postgresClient: postgresClient,
 		linksUC:        linksUC,
+		attachmentsUC:  attachmentUC,
 	}
 }
 
@@ -46,6 +48,13 @@ func (u *GetByIdUC) Execute(ctx context.Context, id int) (*entity.ArticleResp, e
 	}
 
 	resp.LinksRespArray = links
+
+	attachments, err := u.attachmentsUC.GetListById(ctx, ModuleName, id)
+	if err != nil {
+		return nil, err
+	}
+
+	resp.Attachments = &attachments
 
 	return resp, nil
 }

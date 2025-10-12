@@ -7,6 +7,7 @@ import (
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/jip/portfolio-backend/internal/api/links"
+	"github.com/jip/portfolio-backend/internal/api/attachments"
 )
 
 var (
@@ -21,8 +22,8 @@ type articlesUC struct {
 	getList *GetListUC
 }
 
-func NewUseCase(config *entity.Config,  articlesRepo articles.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase) articles.UseCase {
-	byId := NewGetByIdUC(config, articlesRepo, postgresClient, linksUC)
+func NewUseCase(config *entity.Config,  articlesRepo articles.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase, attachmentsUC attachments.UseCase) articles.UseCase {
+	byId := NewGetByIdUC(config, articlesRepo, postgresClient, linksUC, attachmentsUC)
 
 	return &articlesUC{
 		create:  NewCreateUC(config, articlesRepo, byId, postgresClient, linksUC),

@@ -8,6 +8,7 @@ import (
 	portfolio "github.com/jip/portfolio-backend"
 	"github.com/jip/portfolio-backend/internal/api/projects"
 	"github.com/jip/portfolio-backend/internal/entity"
+	"github.com/jip/portfolio-backend/internal/api/attachments"
 	"github.com/labstack/echo/v4"
 )
 
@@ -17,11 +18,13 @@ type ErrorResponse struct {
 
 type ProjectsHandler struct {
 	useCase projects.UseCase
+	AttachmentsUC attachments.UseCase
 }
 
-func NewHandler(useCase projects.UseCase) *ProjectsHandler {
+func NewHandler(useCase projects.UseCase, AttachmentsUC attachments.UseCase) *ProjectsHandler {
 	return &ProjectsHandler{
 		useCase: useCase,
+		AttachmentsUC: AttachmentsUC,
 	}
 }
 
@@ -138,5 +141,91 @@ func (h *ProjectsHandler) List() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, resp)
+	}
+}
+
+func (h *ProjectsHandler) InsertAttachment() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidIDFormat.Error()})
+		}
+
+		// Source
+		fileHeader, err := c.FormFile("file")
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: "file is a required field"})
+		}
+
+		src, err := fileHeader.Open()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "failed to open file"})
+		}
+		defer src.Close()
+
+		title := c.FormValue("title")
+		if title == "" {
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: "title is a required field"})
+		}
+		description := c.FormValue("description")
+		module := "projects"
+
+		attachment := entity.AttachmentFlat{
+			ParentId:    &id,
+			Module:      &module,
+			Title:       &title,
+			Description: &description,
+			FileObject: &entity.File{
+				Name:        fileHeader.Filename,
+				Size:        fileHeader.Size,
+				ContentType: fileHeader.Header.Get("Content-Type"),
+				Content:     src,
+			},
+		}
+
+		attachments := []entity.AttachmentFlat{attachment}
+
+		err = h.AttachmentsUC.Insert(c.Request().Context(), attachments)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		}
+
+		return c.NoContent(http.StatusNoContent)
+	}
+}
+
+func (h *ProjectsHandler) DeleteAttachment() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		idStr := c.Param("id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidIDFormat.Error()})
+		}
+
+		idsStr := c.QueryParam("ids")
+		if idsStr == "" {
+			return c.JSON(http.StatusBadRequest, ErrorResponse{Error: "ids query param is required"})
+		}
+
+		idsSplit := strings.Split(idsStr, ",")
+		var ids []int
+		for _, idStr := range idsSplit {
+			id, err := strconv.Atoi(idStr)
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, ErrorResponse{Error: portfolio.ErrInvalidIDFormat.Error()})
+			}
+			ids = append(ids, id)
+		}
+
+		err = h.AttachmentsUC.Delete(c.Request().Context(), "projects", id, ids)
+		if err != nil {
+			if strings.Contains(err.Error(), "not found") {
+				return c.JSON(http.StatusNotFound, ErrorResponse{Error: portfolio.ErrNotFound.Error()})
+			}
+			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+		}
+
+		return c.NoContent(http.StatusNoContent)
 	}
 }

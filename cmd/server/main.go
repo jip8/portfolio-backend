@@ -39,6 +39,10 @@ import (
 
 	linksUseCases "github.com/jip/portfolio-backend/internal/api/links/usecases"
 	linksRepositories "github.com/jip/portfolio-backend/internal/api/links/repositories"
+
+	attachmentsHandlers "github.com/jip/portfolio-backend/internal/api/attachments/handlers"
+	attachmentsUseCases "github.com/jip/portfolio-backend/internal/api/attachments/usecases"
+	attachmentsRepositories "github.com/jip/portfolio-backend/internal/api/attachments/repositories"
 )
 
 func main() {
@@ -52,7 +56,7 @@ func main() {
 		log.Fatalf("Failed to create Redis client: %s", err)
 	}
 
-	_, err = services.NewMinioClient(config)
+	minioClient, err := services.NewMinioClient(config)
 	if err != nil {
 		log.Fatalf("Failed to create Minio client: %s", err)
 	}
@@ -69,6 +73,12 @@ func main() {
 	jwtMiddleware := echojwt.WithConfig(echojwt.Config{
 		SigningKey: []byte(config.JWT.Secret),
 	})
+
+	// Attachments
+	attachmentsRepository := attachmentsRepositories.NewRepository(config, postgresClient)
+	attachmentsUseCase := attachmentsUseCases.NewUseCase(config, attachmentsRepository, postgresClient, minioClient)
+	attachmentsHandler := attachmentsHandlers.NewHandler(attachmentsUseCase)
+	attachmentsHandlers.Routes(e.Group("/attachments"), attachmentsHandler, jwtMiddleware)
 
 	// Login
 	loginUseCase := loginUseCases.NewLoginUseCase(config, redisClient)
@@ -105,16 +115,15 @@ func main() {
 
 	// Articles
 	articlesRepository := articlesRepositories.NewRepository(config, postgresClient)
-	articlesUseCase := articlesUseCases.NewUseCase(config, articlesRepository, postgresClient, linksUseCase)
-	articlesHandler := articlesHandlers.NewHandler(articlesUseCase)
+	articlesUseCase := articlesUseCases.NewUseCase(config, articlesRepository, postgresClient, linksUseCase, attachmentsUseCase)
+	articlesHandler := articlesHandlers.NewHandler(articlesUseCase, attachmentsUseCase)
 	articlesHandlers.Routes(e.Group("/articles"), articlesHandler, jwtMiddleware)
 
 	// Projects
 	projectsRepository := projectsRepositories.NewRepository(config, postgresClient)
-	projectsUseCase := projectsUseCases.NewUseCase(config, projectsRepository, postgresClient, linksUseCase)
-	projectsHandler := projectsHandlers.NewHandler(projectsUseCase)
+	projectsUseCase := projectsUseCases.NewUseCase(config, projectsRepository, postgresClient, linksUseCase, attachmentsUseCase)
+	projectsHandler := projectsHandlers.NewHandler(projectsUseCase, attachmentsUseCase)
 	projectsHandlers.Routes(e.Group("/projects"), projectsHandler, jwtMiddleware)
-
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")

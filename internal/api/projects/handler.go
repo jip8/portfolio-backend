@@ -10,4 +10,6 @@ type Handlers interface {
 	Delete() echo.HandlerFunc
 	ById() echo.HandlerFunc
 	List() echo.HandlerFunc
+	InsertAttachment() echo.HandlerFunc
+	DeleteAttachment() echo.HandlerFunc
 }
