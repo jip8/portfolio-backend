@@ -15,6 +15,7 @@ type ArticleFlat struct {
 	PublishedAt    	*time.Time 	`json:"published_at_time" db:"published_at_time"`
 	Revelance      	*int       	`json:"revelance" db:"revelance"`
 	LinksArray      LinkArray  	`json:"links" db:"-"`
+	Skills          SkillArray 	`json:"skills" db:"-"`
 }
 
 func (c *ArticleFlat) Validate() error {
@@ -43,6 +44,7 @@ type ArticleResp struct {
 	Revelance      	*int       				`json:"revelance,omitempty" db:"revelance"`
 	LinksRespArray  LinkRespArray 			`json:"links,omitempty" db:"-"`
 	Attachments     *AttachmentRespArray 	`json:"attachments,omitempty" db:"-"`
+	Skills          SkillRespArray 			`json:"skills,omitempty" db:"-"`
 }
 
 func (c *ArticleResp) Format() error {

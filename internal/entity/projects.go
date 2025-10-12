@@ -13,6 +13,7 @@ type ProjectFlat struct {
 	PublishedAt    	*time.Time 	`json:"concluded_at_time" db:"concluded_at_time"`
 	Revelance      	*int       	`json:"revelance" db:"revelance"`
 	LinksArray      LinkArray  	`json:"links" db:"-"`
+	Skills          SkillArray 	`json:"skills" db:"-"`
 }
 
 func (c *ProjectFlat) Validate() error {
@@ -40,6 +41,7 @@ type ProjectResp struct {
 	Revelance      *int       			`json:"revelance,omitempty" db:"revelance"`
 	LinksRespArray LinkRespArray 		`json:"links" db:"-"`
 	Attachments    *AttachmentRespArray `json:"attachments,omitempty" db:"-"`
+	Skills         SkillRespArray 		`json:"skills,omitempty" db:"-"`
 }
 
 func (c *ProjectResp) Format() error {

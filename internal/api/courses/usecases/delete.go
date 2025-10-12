@@ -6,19 +6,22 @@ import (
 	"github.com/jip/portfolio-backend/internal/api/courses"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
+	"github.com/jip/portfolio-backend/internal/api/skills"
 )
 
 type DeleteUC struct {
 	config         *entity.Config
 	coursesRepo    courses.Repository
 	postgresClient *services.PostgresClient
+	skillsUC       skills.UseCase
 }
 
-func NewDeleteUC(config *entity.Config, coursesRepo courses.Repository, postgresClient *services.PostgresClient) *DeleteUC {
+func NewDeleteUC(config *entity.Config, coursesRepo courses.Repository, postgresClient *services.PostgresClient, skillsUC skills.UseCase) *DeleteUC {
 	return &DeleteUC{
 		config:         config,
 		coursesRepo:    coursesRepo,
 		postgresClient: postgresClient,
+		skillsUC:       skillsUC,
 	}
 }
 
@@ -32,6 +35,11 @@ func (u *DeleteUC) Execute(ctx context.Context, id int) (err error) {
 	}()
 
 	err = u.coursesRepo.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	err = u.skillsUC.DeleteAll(ctx, moduleName, id)
 	if err != nil {
 		return err
 	}

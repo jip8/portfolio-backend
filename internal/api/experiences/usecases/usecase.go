@@ -6,6 +6,11 @@ import (
 	"github.com/jip/portfolio-backend/internal/api/experiences"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
+	"github.com/jip/portfolio-backend/internal/api/skills"
+)
+
+const (
+	moduleName = "experiences"
 )
 
 type experiencesUC struct {
@@ -17,13 +22,13 @@ type experiencesUC struct {
 }
 
 
-func NewUseCase(config *entity.Config, experiencesRepo experiences.Repository, postgresClient *services.PostgresClient) experiences.UseCase {
-	byId := NewGetByIdUC(config, experiencesRepo, postgresClient)
+func NewUseCase(config *entity.Config, experiencesRepo experiences.Repository, postgresClient *services.PostgresClient, skillsUC skills.UseCase) experiences.UseCase {
+	byId := NewGetByIdUC(config, experiencesRepo, postgresClient, skillsUC)
 
 	return &experiencesUC{
-		create:  NewCreateUC(config, experiencesRepo, byId, postgresClient),
-		update:  NewUpdateUC(config, experiencesRepo, byId, postgresClient),
-		delete:  NewDeleteUC(config, experiencesRepo, postgresClient),
+		create:  NewCreateUC(config, experiencesRepo, byId, postgresClient, skillsUC),
+		update:  NewUpdateUC(config, experiencesRepo, byId, postgresClient, skillsUC),
+		delete:  NewDeleteUC(config, experiencesRepo, postgresClient, skillsUC),
 		getById: byId,
 		getList: NewGetListUC(config, experiencesRepo, postgresClient),
 	}

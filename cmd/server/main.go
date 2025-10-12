@@ -109,13 +109,13 @@ func main() {
 
 	// Courses
 	coursesRepository := coursesRepositories.NewRepository(config, postgresClient)
-	coursesUseCase := coursesUseCases.NewUseCase(config, coursesRepository, postgresClient)
+	coursesUseCase := coursesUseCases.NewUseCase(config, coursesRepository, postgresClient, skillsUseCase)
 	coursesHandler := coursesHandlers.NewHandler(coursesUseCase)
 	coursesHandlers.Routes(e.Group("/courses"), coursesHandler, jwtMiddleware)
 	
 	// Experiences
 	experiencesRepository := experiencesRepositories.NewRepository(config, postgresClient)
-	experiencesUseCase := experiencesUseCases.NewUseCase(config, experiencesRepository, postgresClient)
+	experiencesUseCase := experiencesUseCases.NewUseCase(config, experiencesRepository, postgresClient, skillsUseCase)
 	experiencesHandler := experiencesHandlers.NewHandler(experiencesUseCase)
 	experiencesHandlers.Routes(e.Group("/experiences"), experiencesHandler, jwtMiddleware)
 
@@ -125,13 +125,13 @@ func main() {
 
 	// Articles
 	articlesRepository := articlesRepositories.NewRepository(config, postgresClient)
-	articlesUseCase := articlesUseCases.NewUseCase(config, articlesRepository, postgresClient, linksUseCase, attachmentsUseCase)
+	articlesUseCase := articlesUseCases.NewUseCase(config, articlesRepository, postgresClient, linksUseCase, attachmentsUseCase, skillsUseCase)
 	articlesHandler := articlesHandlers.NewHandler(articlesUseCase, attachmentsUseCase)
 	articlesHandlers.Routes(e.Group("/articles"), articlesHandler, jwtMiddleware)
 
 	// Projects
 	projectsRepository := projectsRepositories.NewRepository(config, postgresClient)
-	projectsUseCase := projectsUseCases.NewUseCase(config, projectsRepository, postgresClient, linksUseCase, attachmentsUseCase)
+	projectsUseCase := projectsUseCases.NewUseCase(config, projectsRepository, postgresClient, linksUseCase, attachmentsUseCase, skillsUseCase)
 	projectsHandler := projectsHandlers.NewHandler(projectsUseCase, attachmentsUseCase)
 	projectsHandlers.Routes(e.Group("/projects"), projectsHandler, jwtMiddleware)
 
