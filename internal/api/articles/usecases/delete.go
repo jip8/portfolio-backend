@@ -7,6 +7,7 @@ import (
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/jip/portfolio-backend/internal/api/links"
+	"github.com/jip/portfolio-backend/internal/api/attachments"
 )
 
 type DeleteUC struct {
@@ -14,14 +15,16 @@ type DeleteUC struct {
 	articlesRepo   articles.Repository
 	postgresClient *services.PostgresClient
 	linksUC        links.UseCase
+	attachmentsUC  attachments.UseCase
 }
 
-func NewDeleteUC(config *entity.Config, articlesRepo articles.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase) *DeleteUC {
+func NewDeleteUC(config *entity.Config, articlesRepo articles.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase, attachmentsUC attachments.UseCase) *DeleteUC {
 	return &DeleteUC{
 		config:         config,
 		articlesRepo:   articlesRepo,
 		postgresClient: postgresClient,
 		linksUC:        linksUC,
+		attachmentsUC:  attachmentsUC,
 	}
 }
 
@@ -44,5 +47,10 @@ func (u *DeleteUC) Execute(ctx context.Context, id int) (err error) {
 		return err
 	}
 
+	err = u.attachmentsUC.DeleteAll(ctx, ModuleName, id)
+	if err != nil {
+		return err
+	}
+	
 	return nil
 }

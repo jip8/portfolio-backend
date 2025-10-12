@@ -28,7 +28,7 @@ func NewUseCase(config *entity.Config,  articlesRepo articles.Repository, postgr
 	return &articlesUC{
 		create:  NewCreateUC(config, articlesRepo, byId, postgresClient, linksUC),
 		update:  NewUpdateUC(config, articlesRepo, byId, postgresClient, linksUC),
-		delete:  NewDeleteUC(config, articlesRepo, postgresClient, linksUC),
+		delete:  NewDeleteUC(config, articlesRepo, postgresClient, linksUC, attachmentsUC),
 		getById: byId,
 		getList: NewGetListUC(config, articlesRepo, postgresClient),
 	}

@@ -43,6 +43,10 @@ import (
 	attachmentsHandlers "github.com/jip/portfolio-backend/internal/api/attachments/handlers"
 	attachmentsUseCases "github.com/jip/portfolio-backend/internal/api/attachments/usecases"
 	attachmentsRepositories "github.com/jip/portfolio-backend/internal/api/attachments/repositories"
+
+	skillsHandlers "github.com/jip/portfolio-backend/internal/api/skills/handlers"
+	skillsUseCases "github.com/jip/portfolio-backend/internal/api/skills/usecases"
+	skillsRepositories "github.com/jip/portfolio-backend/internal/api/skills/repositories"
 )
 
 func main() {
@@ -84,6 +88,12 @@ func main() {
 	loginUseCase := loginUseCases.NewLoginUseCase(config, redisClient)
 	loginHandler := loginHandlers.NewLoginHandler(loginUseCase)
 	loginHandlers.LoginRoutes(e.Group("/login"), loginHandler)
+
+	// Skills
+	skillsRepository := skillsRepositories.NewRepository(config, postgresClient)
+	skillsUseCase := skillsUseCases.NewUseCase(config, skillsRepository, postgresClient)
+	skillsHandler := skillsHandlers.NewHandler(skillsUseCase)
+	skillsHandlers.Routes(e.Group("/skills"), skillsHandler, jwtMiddleware)
 
 	// About
 	aboutRepository := aboutRepositories.NewRepository(config, postgresClient)

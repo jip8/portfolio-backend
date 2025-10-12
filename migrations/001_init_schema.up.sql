@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS skills_relations (
     skill_id        INTEGER NOT NULL,
     revelance       INTEGER,
   
-    FOREIGN KEY (skill_id) REFERENCES skills(id)
+    FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS courses (

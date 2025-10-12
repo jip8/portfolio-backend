@@ -43,4 +43,8 @@ var (
 
 	// Attachments
 	ErrAttachmentIdIsRequired        	= errors.New("id is required")
+
+	// Skills
+	ErrSkillIdIsRequired        	= errors.New("id is required")
+	ErrSkillTitleIsRequired     	= errors.New("title is required")
 )
