@@ -44,14 +44,11 @@ func (u *UpsertUC) Execute(ctx context.Context, parent_id *int, module *string, 
 	var toUpsert []entity.SkillFlat
 
 	for _, skill := range input {
-		if skill.Id == nil || *skill.Id == 0 {
+		if skill.Id == nil || *skill.Id >= 0 {
 			toUpsert = append(toUpsert, skill)
 			continue
 		} else if *skill.Id < 0 {
 			toDelete = append(toDelete, -*skill.Id)
-			continue
-		} else {
-			toInsert = append(toInsert, *skill.Id)
 			continue
 		}
 	}
