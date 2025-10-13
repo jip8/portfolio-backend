@@ -53,19 +53,23 @@ func (u *UpsertUC) Execute(ctx context.Context, parent_id *int, module *string, 
 		}
 	}
 
-	err = u.skillsRepo.Delete(ctx, toDelete)
-	if err != nil {
-		return err
+	if len(toDelete) > 0 {
+		err = u.skillsRepo.Delete(ctx, toDelete)
+		if err != nil {
+			return err
+		}
 	}
 
-	newIds, err := u.skillsRepo.Upsert(ctx, toUpsert)
-	if err != nil {
-		return err
+	if len(toUpsert) > 0 {
+		newIds, err := u.skillsRepo.Upsert(ctx, toUpsert)
+		if err != nil {
+			return err
+		}
+		toInsert = append(toInsert, newIds...)
 	}
 
-	toInsert = append(toInsert, newIds...)
 
-	if parent_id != nil && module != nil {
+	if parent_id != nil && module != nil && len(toInsert) > 0 {
 		err = u.skillsRepo.AddExclusive(ctx, parent_id, module, toInsert)
 		if err != nil {
 			return err

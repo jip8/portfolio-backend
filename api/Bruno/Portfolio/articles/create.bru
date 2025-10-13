@@ -1,0 +1,38 @@
+meta {
+  name: create
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/articles
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "type": "Artigo",
+    "title": "New Article",
+    "description": "Description of the new article.",
+    "local": "Some local info",
+    "published_at": "01-10-2025",
+    "revelance": 10,
+    "links": [
+      {
+        "id": 1,
+        "link": "http://example.com/link1"
+      }
+    ],
+    "skills": [
+      {
+        "id": 1,
+        "title": "Go"
+      }
+    ]
+  }
+}

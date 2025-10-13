@@ -27,30 +27,35 @@ func (r *UpsertRepository) Execute(ctx context.Context, skills []entity.SkillFla
 	}
 
 	valueStrings := make([]string, 0, len(skills))
-	valueArgs := make([]interface{}, 0, len(skills) * 4)
+	valueArgs := make([]interface{}, 0, len(skills) * 3)
 	i := 1
 	for _, skill := range skills {
-		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d, $%d, $%d)", i, i+1, i+2, i+3))
-		if *skill.Id == 0 {
-			valueArgs = append(valueArgs, nil)
+		if skill.Id == nil || *skill.Id == 0 {
+			valueStrings = append(valueStrings,
+				fmt.Sprintf("(DEFAULT, $%d, $%d)", i, i+1))
+			valueArgs = append(valueArgs,
+				skill.Title,
+				skill.Description,
+			)
+			i += 2
 		} else {
-			valueArgs = append(valueArgs, skill.Id)
+			valueStrings = append(valueStrings,
+				fmt.Sprintf("($%d, $%d, $%d)", i, i+1, i+2))
+			valueArgs = append(valueArgs,
+				*skill.Id,
+				skill.Title,
+				skill.Description,
+			)
+			i += 3
 		}
-
-		valueArgs = append(valueArgs, skill.Title)
-		valueArgs = append(valueArgs, skill.Revelance)
-		valueArgs = append(valueArgs, skill.Description)
-		i += 4
 	}
 
 	stmt := `
-        INSERT INTO portfolio.skills (id, title, revelance, description)
+        INSERT INTO portfolio.skills (id, title, description)
         VALUES %s
         ON CONFLICT (id) DO UPDATE SET
-            skill = EXCLUDED.skill,
-            revelance = EXCLUDED.revelance,
-            description = EXCLUDED.description,
-            updated_at = NOW()
+            title = EXCLUDED.title,
+            description = EXCLUDED.description
 		RETURNING id
     `
 	query := fmt.Sprintf(stmt, strings.Join(valueStrings, ","))

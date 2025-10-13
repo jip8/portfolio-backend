@@ -37,7 +37,6 @@ func (r *AddExclusiveRepository) Execute(ctx context.Context, parent_id *int, mo
 		query := `
 		INSERT INTO portfolio.skills_relations (parent_id, module, skill_id)
 		VALUES %s
-		ON CONFLICT (parent_id, module) DO NOTHING
 		`
 		valueStrings := make([]string, 0, len(ids))
 		valueArgs := make([]interface{}, 0, len(ids))

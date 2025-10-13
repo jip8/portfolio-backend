@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"context"
-	"path/filepath"
 
 	"github.com/google/uuid"
 	"github.com/jip/portfolio-backend/internal/api/attachments"
@@ -34,14 +33,14 @@ func (u *InsertUC) Execute(ctx context.Context, input []entity.AttachmentFlat) e
 			continue
 		}
 		file := input[i].FileObject
-		fileName := uuid.New().String() + filepath.Ext(file.Name)
+		fileName := uuid.New().String()
 		file.Name = fileName
 
-		uploadInfo, err := u.minioClient.AddObject(ctx, file)
+		_, err := u.minioClient.AddObject(ctx, file)
 		if err != nil {
 			return err
 		}
-		input[i].Link = uploadInfo.Key
+		input[i].Link = fileName
 		input[i].ContentType = &file.ContentType
 	}
 

@@ -1,0 +1,45 @@
+meta {
+  name: update
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/articles/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "title": "Updated Article",
+    "description": "Updated description.",
+    "local": "Updated local info",
+    "published_at": "02-10-2025",
+    "revelance": 12,
+    "links": [
+      {
+        "id": 1,
+        "link": "http://example.com/updated-link"
+      }
+    ],
+    "skills": [
+      {
+        "id": 1,
+        "title": "Go"
+      },
+      {
+        "id": 2,
+        "title": "PostgreSQL"
+      }
+    ]
+  }
+}

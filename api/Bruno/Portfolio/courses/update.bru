@@ -1,0 +1,38 @@
+meta {
+  name: update
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/courses/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "title": "Updated Course",
+    "description": "Updated description.",
+    "concluded_at": "02-10-2025",
+    "revelance": 12,
+    "skills": [
+      {
+        "id": 1,
+        "title": "Go"
+      },
+      {
+        "id": 2,
+        "title": "PostgreSQL"
+      }
+    ]
+  }
+}

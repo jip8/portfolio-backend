@@ -1,0 +1,36 @@
+meta {
+  name: create
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/projects
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "New Project",
+    "description": "Description of the new project.",
+    "published_at": "01-10-2025",
+    "revelance": 10,
+    "links": [
+      {
+        "id": 1,
+        "link": "http://example.com/link1"
+      }
+    ],
+    "skills": [
+      {
+        "id": 1,
+        "title": "Go"
+      }
+    ]
+  }
+}

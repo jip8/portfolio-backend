@@ -34,7 +34,7 @@ func (u *GetByIdUC) Execute(ctx context.Context, id int) (*entity.CourseResp, er
 	}
 
 	module := fmt.Sprintf("%s", moduleName)
-	skills, err := u.skillsUC.GetList(ctx, &module, &id)
+	skills, err := u.skillsUC.GetListById(ctx, &module, &id)
 	if err != nil {
 		return nil, err
 	}

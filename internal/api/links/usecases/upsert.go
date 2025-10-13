@@ -56,14 +56,18 @@ func (u *UpsertUC) Execute(ctx context.Context, input entity.LinkArray) error {
 		}
 	}
 
-	err = u.linksRepo.Delete(ctx, toDelete)
-	if err != nil {
-		return err
+	if len(toDelete) > 0 {
+		err = u.linksRepo.Delete(ctx, toDelete)
+		if err != nil {
+			return err
+		}
 	}
 
-	err = u.linksRepo.Upsert(ctx, toUpsert)
-	if err != nil {
-		return err
+	if len(toUpsert) > 0 {
+		err = u.linksRepo.Upsert(ctx, toUpsert)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

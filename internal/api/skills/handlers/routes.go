@@ -11,5 +11,5 @@ func Routes(e *echo.Group, handler skills.Handlers, authMiddleware echo.Middlewa
 
 	// Authenticated routes
 	authGroup := e.Group("", authMiddleware)
-	authGroup.PUT("/:id", handler.Update())
+	authGroup.PUT("", handler.Update())
 }

@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS links (
     revelance       INTEGER,
     description     TEXT,
 
-    updated_at      TIMESTAMP DEFAULT NOW(),
+    updated_at      TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS attachments (
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS attachments (
     parent_id       INTEGER NOT NULL,
     module          VARCHAR(64) NOT NULL,
     title           VARCHAR(255) NOT NULL,
-    url             VARCHAR(255) NOT NULL,
+    link            VARCHAR(255) NOT NULL,
     content_type    VARCHAR(64),
     description     TEXT,
 

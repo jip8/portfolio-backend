@@ -1,0 +1,29 @@
+meta {
+  name: update
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/contacts/:id
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "link": "http://example.com/updated-contact",
+    "plataform": "LinkedIn",
+    "description": "My LinkedIn profile",
+    "active": true,
+    "revelance": 15
+  }
+}

@@ -8,6 +8,7 @@ import (
 
 type ArticleFlat struct {
 	Id              *int       	`json:"id" db:"id"`
+	Type            string     	`json:"type" db:"type"`
 	Title          	string     	`json:"title" db:"title"`
 	Description    	*string    	`json:"description" db:"description"`
 	Local           *string    	`json:"local" db:"local"`
@@ -36,6 +37,7 @@ func (c *ArticleFlat) Validate() error {
 
 type ArticleResp struct {
 	Id              int        				`json:"id" db:"id"`
+	Type            string     				`json:"type" db:"type"`
 	Title          	string     				`json:"title" db:"title"`
 	Description    	*string    				`json:"description" db:"description"`
 	Local           *string    				`json:"local" db:"local"`

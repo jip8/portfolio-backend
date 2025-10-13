@@ -30,19 +30,34 @@ func (r *InsertRepository) Execute(ctx context.Context, attachments []entity.Att
 	valueArgs := make([]interface{}, 0, len(attachments)*7)
 	i := 1
 	for _, attachment := range attachments {
-		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d)", i, i+1, i+2, i+3, i+4, i+5, i+6))
-		if *attachment.Id == 0 {
-			valueArgs = append(valueArgs, nil)
+		if attachment.Id == nil || *attachment.Id == 0 {
+			valueStrings = append(valueStrings,
+				fmt.Sprintf("(DEFAULT, $%d, $%d, $%d, $%d, $%d, $%d)",
+					i, i+1, i+2, i+3, i+4, i+5))
+			valueArgs = append(valueArgs,
+				attachment.ParentId,
+				attachment.Module,
+				attachment.Title,
+				attachment.Link,
+				attachment.ContentType,
+				attachment.Description,
+			)
+			i += 6
 		} else {
-			valueArgs = append(valueArgs, attachment.Id)
+			valueStrings = append(valueStrings,
+				fmt.Sprintf("($%d, $%d, $%d, $%d, $%d, $%d, $%d)",
+					i, i+1, i+2, i+3, i+4, i+5, i+6))
+			valueArgs = append(valueArgs,
+				*attachment.Id,
+				attachment.ParentId,
+				attachment.Module,
+				attachment.Title,
+				attachment.Link,
+				attachment.ContentType,
+				attachment.Description,
+			)
+			i += 7
 		}
-		valueArgs = append(valueArgs, attachment.ParentId)
-		valueArgs = append(valueArgs, attachment.Module)
-		valueArgs = append(valueArgs, attachment.Title)
-		valueArgs = append(valueArgs, attachment.Link)
-		valueArgs = append(valueArgs, attachment.ContentType)
-		valueArgs = append(valueArgs, attachment.Description)
-		i += 7
 	}
 
 	stmt := `

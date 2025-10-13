@@ -5,7 +5,6 @@ import (
 
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
-	"strings"
 )
 
 type GetListByIdRepository struct {
@@ -24,27 +23,19 @@ func (r *GetListByIdRepository) Execute(ctx context.Context, module *string, par
 	var items []entity.SkillResp
 	query := `
 	SELECT
-		id,
-		title,
-		skill,
-		description
-	FROM portfolio.skills
-	${filter}
-	ORDER BY revelance`
+		t2.id,
+		t2.title,
+		t2.description
+	FROM portfolio.skills_relations t1
+	LEFT JOIN portfolio.skills t2 ON t1.skill_id = t2.id
+	WHERE module = $1 AND parent_id = $2
+	ORDER BY t1.revelance`
 
 	executor := r.postgresClient.GetExecutor(ctx)
 
-	var filter string
 	var args []interface{}
 
-	if module != nil && parentId != nil {
-		filter = "WHERE module = $1 AND parent_id = $2"
-		args = append(args, *module, *parentId)
-	} else {
-		filter = ""
-	}
-
-	query = strings.ReplaceAll(query, "${filter}", filter)
+	args = append(args, *module, *parentId)
 
 	if err := executor.SelectContext(ctx, &items, query, args...); err != nil {
 		return nil, err

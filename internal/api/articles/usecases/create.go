@@ -51,13 +51,24 @@ func (u *CreateUC) Execute(ctx context.Context, req entity.ArticleFlat) (resp *e
 		return nil, err
 	}
 
-	resp, err = u.byId.Execute(ctx, *createdId)
+	module := fmt.Sprintf("%s", ModuleName)
+
+	for i := range req.LinksArray {
+		req.LinksArray[i].ParentId = createdId
+		req.LinksArray[i].Module = &module
+	}
+
+	err = u.linksUC.Upsert(ctx, req.LinksArray)
 	if err != nil {
 		return nil, err
 	}
 
-	module := fmt.Sprintf("%s", ModuleName)
 	err = u.skillsUC.Upsert(ctx, createdId, &module, req.Skills)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err = u.byId.Execute(ctx, *createdId)
 	if err != nil {
 		return nil, err
 	}

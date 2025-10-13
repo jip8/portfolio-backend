@@ -61,7 +61,7 @@ func (u *GetByIdUC) Execute(ctx context.Context, id int) (*entity.ProjectResp, e
 	resp.Attachments = &attachments
 
 	module := fmt.Sprintf("%s", ModuleName)
-	resp.Skills, err = u.skillsUC.GetList(ctx, &module, &id)
+	resp.Skills, err = u.skillsUC.GetListById(ctx, &module, &id)
 	if err != nil {
 		return nil, err
 	}

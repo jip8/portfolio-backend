@@ -39,7 +39,7 @@ func (h *SkillsHandler) Update() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		}
 
-		resp, err := h.useCase.GetList(c.Request().Context(), nil, nil)
+		resp, err := h.useCase.GetList(c.Request().Context())
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		}
@@ -51,7 +51,7 @@ func (h *SkillsHandler) Update() echo.HandlerFunc {
 func (h *SkillsHandler) List() echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		resp, err := h.useCase.GetList(c.Request().Context(), nil, nil)
+		resp, err := h.useCase.GetList(c.Request().Context())
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		}
