@@ -22,7 +22,7 @@ func NewUpdateRepository(config *entity.Config, postgresClient *services.Postgre
 
 func (r *UpdateRepository) Execute(ctx context.Context, req entity.About) error {
 	query := `
-		INSERT INTO about_text (id, title, content, updated_at)
+		INSERT INTO portfolio.about_text (id, title, content, updated_at)
         	VALUES (1, :title, :content, NOW())
         ON CONFLICT (id) DO UPDATE SET title = :title, content = EXCLUDED.content, updated_at = NOW();
 	`

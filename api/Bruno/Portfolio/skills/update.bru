@@ -1,0 +1,32 @@
+meta {
+  name: update
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{base_url}}/skills
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  [
+    {
+      "id": 1,
+      "title": "Go",
+      "revelance": 10,
+      "description": "Go programming language"
+    },
+    {
+      "id": 2,
+      "title": "PostgreSQL",
+      "revelance": 9,
+      "description": "PostgreSQL database"
+    }
+  ]
+}

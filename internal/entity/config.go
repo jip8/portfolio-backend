@@ -17,6 +17,7 @@ type Config struct {
 		AccessKeyID     string `yaml:"accessKeyID"`
 		SecretAccessKey string `yaml:"secretAccessKey"`
 		UseSSL          bool   `yaml:"useSSL"`
+		Bucket          string `yaml:"bucket"`
 	} `yaml:"minio"`
 	Postgres struct {
 		Host     string `yaml:"host"`

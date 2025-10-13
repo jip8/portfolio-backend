@@ -6,6 +6,11 @@ import (
 	"github.com/jip/portfolio-backend/internal/api/courses"
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
+	"github.com/jip/portfolio-backend/internal/api/skills"
+)
+
+const (
+	moduleName = "courses"
 )
 
 type coursesUC struct {
@@ -16,13 +21,13 @@ type coursesUC struct {
 	getList *GetListUC
 }
 
-func NewUseCase(config *entity.Config, coursesRepo courses.Repository, postgresClient *services.PostgresClient) courses.UseCase {
-	byId := NewGetByIdUC(config, coursesRepo, postgresClient)
+func NewUseCase(config *entity.Config, coursesRepo courses.Repository, postgresClient *services.PostgresClient, skillsUC skills.UseCase) courses.UseCase {
+	byId := NewGetByIdUC(config, coursesRepo, postgresClient, skillsUC)
 
 	return &coursesUC{
-		create:  NewCreateUC(config, coursesRepo, byId, postgresClient),
-		update:  NewUpdateUC(config, coursesRepo, byId, postgresClient),
-		delete:  NewDeleteUC(config, coursesRepo, postgresClient),
+		create:  NewCreateUC(config, coursesRepo, byId, postgresClient, skillsUC),
+		update:  NewUpdateUC(config, coursesRepo, byId, postgresClient, skillsUC),
+		delete:  NewDeleteUC(config, coursesRepo, postgresClient, skillsUC),
 		getById: byId,
 		getList: NewGetListUC(config, coursesRepo, postgresClient),
 	}

@@ -1,0 +1,19 @@
+meta {
+  name: deleteAttachment
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{base_url}}/projects/:id/attachments
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: 1
+}

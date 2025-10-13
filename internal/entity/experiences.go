@@ -15,6 +15,7 @@ type ExperienceFlat struct {
 	EndDateStr     	*string    	`json:"end_date" db:"end_date_str"`
 	EndDate        	*time.Time 	`json:"end_date_time" db:"end_date_time"`
 	Actual         	*bool      	`json:"actual" db:"actual"`
+	Skills          SkillArray 	`json:"skills" db:"-"`
 }
 
 
@@ -56,15 +57,16 @@ func (e *ExperienceFlat) Validate() error {
 }
 
 type ExperienceResp struct {
-	Id             int        `json:"id" db:"id"`
-	Title          string     `json:"title" db:"title"`
-	Function       *string    `json:"function" db:"function"`
-	Description    *string    `json:"description,omitempty" db:"description"`
-	InitialDateStr *string    `json:"initial_date" db:"initial_date_str"`
-	InitialDate    *time.Time `json:"initial_date_time,omitempty" db:"initial_date_time"`
-	EndDateStr     *string    `json:"end_date" db:"end_date_str"`
-	EndDate        *time.Time `json:"end_date_time,omitempty" db:"end_date_time"`
-	Actual         *bool      `json:"actual,omitempty" db:"actual"`
+	Id             int        		`json:"id" db:"id"`
+	Title          string     		`json:"title" db:"title"`
+	Function       *string    		`json:"function" db:"function"`
+	Description    *string    		`json:"description,omitempty" db:"description"`
+	InitialDateStr *string    		`json:"initial_date" db:"initial_date_str"`
+	InitialDate    *time.Time 		`json:"initial_date_time,omitempty" db:"initial_date_time"`
+	EndDateStr     *string    		`json:"end_date" db:"end_date_str"`
+	EndDate        *time.Time 		`json:"end_date_time,omitempty" db:"end_date_time"`
+	Actual         *bool      		`json:"actual,omitempty" db:"actual"`
+	Skills          SkillRespArray 	`json:"skills,omitempty" db:"-"`
 }
 
 func (e *ExperienceResp) Format() error {

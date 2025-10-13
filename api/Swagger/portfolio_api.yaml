@@ -1,0 +1,1048 @@
+openapi: 3.0.0
+info:
+  title: Portfolio API
+  description: API for managing a personal portfolio.
+  version: 1.0.0
+tags:
+  - name: Login
+    description: Operations about login
+  - name: About
+    description: Operations about about me
+  - name: Articles
+    description: Operations about articles
+  - name: Attachments
+    description: Operations about attachments
+  - name: Contacts
+    description: Operations about contacts
+  - name: Courses
+    description: Operations about courses
+  - name: Experiences
+    description: Operations about experiences
+  - name: Projects
+    description: Operations about projects
+  - name: Skills
+    description: Operations about skills
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+  /about:
+    get:
+      tags:
+        - About
+      summary: Get about me information
+      responses:
+        '200':
+          description: About me information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/About'
+    put:
+      tags:
+        - About
+      summary: Update about me information
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/About'
+      responses:
+        '200':
+          description: About me information updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/About'
+  /articles:
+    get:
+      tags:
+        - Articles
+      summary: List all articles
+      responses:
+        '200':
+          description: A list of articles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleList'
+    post:
+      tags:
+        - Articles
+      summary: Create a new article
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleFlat'
+      responses:
+        '201':
+          description: Article created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleResp'
+  /articles/{id}:
+    get:
+      tags:
+        - Articles
+      summary: Get an article by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single article
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleResp'
+    put:
+      tags:
+        - Articles
+      summary: Update an article by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleFlat'
+      responses:
+        '200':
+          description: Article updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleResp'
+    delete:
+      tags:
+        - Articles
+      summary: Delete an article by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Article deleted successfully
+  /articles/{id}/attachments:
+    post:
+      tags:
+        - Articles
+      summary: Insert attachment to an article
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Attachment inserted successfully
+    delete:
+      tags:
+        - Articles
+      summary: Delete attachment from an article
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Attachment deleted successfully
+  /attachments/{uuid}:
+    get:
+      tags:
+        - Attachments
+      summary: Get an attachment by UUID
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An attachment file
+  /contacts:
+    get:
+      tags:
+        - Contacts
+      summary: List all contacts
+      responses:
+        '200':
+          description: A list of contacts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactList'
+    post:
+      tags:
+        - Contacts
+      summary: Create a new contact
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+      responses:
+        '201':
+          description: Contact created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+  /contacts/{id}:
+    get:
+      tags:
+        - Contacts
+      summary: Get a contact by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single contact
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+    put:
+      tags:
+        - Contacts
+      summary: Update a contact by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+      responses:
+        '200':
+          description: Contact updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+    delete:
+      tags:
+        - Contacts
+      summary: Delete a contact by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Contact deleted successfully
+  /courses:
+    get:
+      tags:
+        - Courses
+      summary: List all courses
+      responses:
+        '200':
+          description: A list of courses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseList'
+    post:
+      tags:
+        - Courses
+      summary: Create a new course
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseFlat'
+      responses:
+        '201':
+          description: Course created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResp'
+  /courses/{id}:
+    get:
+      tags:
+        - Courses
+      summary: Get a course by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single course
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResp'
+    put:
+      tags:
+        - Courses
+      summary: Update a course by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseFlat'
+      responses:
+        '200':
+          description: Course updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResp'
+    delete:
+      tags:
+        - Courses
+      summary: Delete a course by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Course deleted successfully
+  /experiences:
+    get:
+      tags:
+        - Experiences
+      summary: List all experiences
+      responses:
+        '200':
+          description: A list of experiences
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienceList'
+    post:
+      tags:
+        - Experiences
+      summary: Create a new experience
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceFlat'
+      responses:
+        '201':
+          description: Experience created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienceResp'
+  /experiences/{id}:
+    get:
+      tags:
+        - Experiences
+      summary: Get an experience by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single experience
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienceResp'
+    put:
+      tags:
+        - Experiences
+      summary: Update an experience by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceFlat'
+      responses:
+        '200':
+          description: Experience updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienceResp'
+    delete:
+      tags:
+        - Experiences
+      summary: Delete an experience by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Experience deleted successfully
+  /projects:
+    get:
+      tags:
+        - Projects
+      summary: List all projects
+      responses:
+        '200':
+          description: A list of projects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectList'
+    post:
+      tags:
+        - Projects
+      summary: Create a new project
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectFlat'
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResp'
+  /projects/{id}:
+    get:
+      tags:
+        - Projects
+      summary: Get a project by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResp'
+    put:
+      tags:
+        - Projects
+      summary: Update a project by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectFlat'
+      responses:
+        '200':
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResp'
+    delete:
+      tags:
+        - Projects
+      summary: Delete a project by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Project deleted successfully
+  /projects/{id}/attachments:
+    post:
+      tags:
+        - Projects
+      summary: Insert attachment to a project
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Attachment inserted successfully
+    delete:
+      tags:
+        - Projects
+      summary: Delete attachment from a project
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Attachment deleted successfully
+  /skills:
+    get:
+      tags:
+        - Skills
+      summary: List all skills
+      responses:
+        '200':
+          description: A list of skills
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillList'
+    put:
+      tags:
+        - Skills
+      summary: Update skills
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkillFlat'
+      responses:
+        '200':
+          description: Skills updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillList'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    About:
+      type: object
+      required:
+        - content
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+    ArticleFlat:
+      type: object
+      required:
+        - title
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        local:
+          type: string
+        published_at:
+          type: string
+          example: "01-01-2006"
+        revelance:
+          type: integer
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkFlat'
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillFlat'
+    ArticleResp:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        local:
+          type: string
+        published_at:
+          type: string
+          example: "01-01-2006"
+        revelance:
+          type: integer
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkResp'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentResp'
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillResp'
+    ArticleList:
+      type: object
+      properties:
+        offset:
+          type: integer
+        total:
+          type: integer
+        limit:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArticleResp'
+    AttachmentResp:
+      type: object
+      required:
+        - id
+        - title
+        - link
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        link:
+          type: string
+        description:
+          type: string
+    Contact:
+      type: object
+      required:
+        - link
+        - plataform
+      properties:
+        id:
+          type: integer
+        link:
+          type: string
+        plataform:
+          type: string
+        description:
+          type: string
+        active:
+          type: boolean
+        revelance:
+          type: integer
+    ContactList:
+      type: object
+      properties:
+        offset:
+          type: integer
+        total:
+          type: integer
+        limit:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contact'
+    CourseFlat:
+      type: object
+      required:
+        - title
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        concluded_at:
+          type: string
+          example: "01-01-2006"
+        revelance:
+          type: integer
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillFlat'
+    CourseResp:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        concluded_at:
+          type: string
+          example: "01-01-2006"
+        revelance:
+          type: integer
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillResp'
+    CourseList:
+      type: object
+      properties:
+        offset:
+          type: integer
+        total:
+          type: integer
+        limit:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseResp'
+    ExperienceFlat:
+      type: object
+      required:
+        - title
+        - function
+        - description
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        function:
+          type: string
+        description:
+          type: string
+        initial_date:
+          type: string
+          example: "01-2006"
+        end_date:
+          type: string
+          example: "01-2006"
+        actual:
+          type: boolean
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillFlat'
+    ExperienceResp:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        function:
+          type: string
+        description:
+          type: string
+        initial_date:
+          type: string
+          example: "01-2006"
+        end_date:
+          type: string
+          example: "01-2006"
+        actual:
+          type: boolean
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillResp'
+    ExperienceList:
+      type: object
+      properties:
+        offset:
+          type: integer
+        total:
+          type: integer
+        limit:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExperienceResp'
+    LinkFlat:
+      type: object
+      required:
+        - link
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        link:
+          type: string
+        revelance:
+          type: integer
+        description:
+          type: string
+    LinkResp:
+      type: object
+      required:
+        - id
+        - title
+        - link
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        link:
+          type: string
+        description:
+          type: string
+    ProjectFlat:
+      type: object
+      required:
+        - title
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        published_at:
+          type: string
+          example: "01-01-2006"
+        revelance:
+          type: integer
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkFlat'
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillFlat'
+    ProjectResp:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        published_at:
+          type: string
+          example: "01-01-2006"
+        revelance:
+          type: integer
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkResp'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentResp'
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillResp'
+    ProjectList:
+      type: object
+      properties:
+        offset:
+          type: integer
+        total:
+          type: integer
+        limit:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectResp'
+    SkillFlat:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        revelance:
+          type: integer
+        description:
+          type: string
+    SkillResp:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+    SkillList:
+      type: object
+      properties:
+        offset:
+          type: integer
+        total:
+          type: integer
+        limit:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillResp'

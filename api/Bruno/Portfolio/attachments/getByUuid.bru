@@ -1,0 +1,15 @@
+meta {
+  name: getByUuid
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/attachments/:uuid
+  body: none
+  auth: none
+}
+
+params:path {
+  uuid: your-uuid-here
+}

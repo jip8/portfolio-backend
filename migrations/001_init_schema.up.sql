@@ -46,14 +46,12 @@ CREATE TABLE IF NOT EXISTS links (
     id              SERIAL PRIMARY KEY,
     parent_id       INTEGER NOT NULL,
     module          VARCHAR(64) NOT NULL,
-    title           VARCHAR(255) NOT NULL,
+    title           VARCHAR(255),
     link            VARCHAR(255) NOT NULL,
     revelance       INTEGER,
     description     TEXT,
 
-    updated_at      TIMESTAMP DEFAULT NOW(),
-
-    UNIQUE(parent_id, module, title)
+    updated_at      TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS attachments (
@@ -81,7 +79,7 @@ CREATE TABLE IF NOT EXISTS skills_relations (
     skill_id        INTEGER NOT NULL,
     revelance       INTEGER,
   
-    FOREIGN KEY (skill_id) REFERENCES skills(id)
+    FOREIGN KEY (skill_id) REFERENCES skills(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS courses (

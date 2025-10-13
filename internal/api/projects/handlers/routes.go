@@ -15,4 +15,6 @@ func Routes(e *echo.Group, handler projects.Handlers, authMiddleware echo.Middle
 	authGroup.POST("", handler.Create())
 	authGroup.PUT("/:id", handler.Update())
 	authGroup.DELETE("/:id", handler.Delete())
+	authGroup.POST("/:id/attachments", handler.InsertAttachment())
+	authGroup.DELETE("/:id/attachments", handler.DeleteAttachment())
 }

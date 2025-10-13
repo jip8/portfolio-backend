@@ -1,0 +1,23 @@
+meta {
+  name: insertAttachment
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/projects/:id/attachments
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+params:path {
+  id: 1
+}
+
+body:multipart-form {
+  file: @file(/path/to/your/file.png)
+}

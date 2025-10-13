@@ -7,9 +7,11 @@ import (
 	"github.com/jip/portfolio-backend/internal/entity"
 	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/jip/portfolio-backend/internal/api/links"
+	"github.com/jip/portfolio-backend/internal/api/attachments"
+	"github.com/jip/portfolio-backend/internal/api/skills"
 )
 
-var (
+const (
 	ModuleName = "articles"
 )
 
@@ -21,13 +23,13 @@ type articlesUC struct {
 	getList *GetListUC
 }
 
-func NewUseCase(config *entity.Config,  articlesRepo articles.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase) articles.UseCase {
-	byId := NewGetByIdUC(config, articlesRepo, postgresClient, linksUC)
+func NewUseCase(config *entity.Config,  articlesRepo articles.Repository, postgresClient *services.PostgresClient, linksUC links.UseCase, attachmentsUC attachments.UseCase, skillsUC skills.UseCase) articles.UseCase {
+	byId := NewGetByIdUC(config, articlesRepo, postgresClient, linksUC, attachmentsUC, skillsUC)
 
 	return &articlesUC{
-		create:  NewCreateUC(config, articlesRepo, byId, postgresClient, linksUC),
-		update:  NewUpdateUC(config, articlesRepo, byId, postgresClient, linksUC),
-		delete:  NewDeleteUC(config, articlesRepo, postgresClient, linksUC),
+		create:  NewCreateUC(config, articlesRepo, byId, postgresClient, linksUC, skillsUC),
+		update:  NewUpdateUC(config, articlesRepo, byId, postgresClient, linksUC, skillsUC),
+		delete:  NewDeleteUC(config, articlesRepo, postgresClient, linksUC, attachmentsUC, skillsUC),
 		getById: byId,
 		getList: NewGetListUC(config, articlesRepo, postgresClient),
 	}

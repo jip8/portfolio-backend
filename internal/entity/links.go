@@ -23,14 +23,6 @@ func (l LinkArray) Validate() error {
 			return portfolio.ErrLinkIdIsRequired
 		}
 
-		if link.ParentId == nil {
-			return portfolio.ErrLinkParentIdIsRequired
-		}
-
-		if link.Module == nil {
-			return portfolio.ErrLinkModuleIsRequired
-		}
-
 		if link.Link == "" {
 			return portfolio.ErrLinkLinkIsRequired
 		}
@@ -40,7 +32,7 @@ func (l LinkArray) Validate() error {
 
 type LinkResp struct {
 	Id              int       `json:"id"`
-	Title           string    `json:"title"`
+	Title           *string   `json:"title"`
 	Link            string    `json:"link"`
 	Description     *string   `json:"description,omitempty"`
 }

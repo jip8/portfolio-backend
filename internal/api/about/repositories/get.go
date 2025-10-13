@@ -24,7 +24,7 @@ func (r *GetRepository) Execute(ctx context.Context) (*entity.About, error) {
 	SELECT
 		title,
 		content
-	FROM portfolio.about WHERE id = 1`
+	FROM portfolio.about_text WHERE id = 1`
 
 	var about entity.About
 

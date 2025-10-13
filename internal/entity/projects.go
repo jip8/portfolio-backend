@@ -9,10 +9,11 @@ type ProjectFlat struct {
 	Id              *int       	`json:"id" db:"id"`
 	Title          	string     	`json:"title" db:"title"`
 	Description    	*string    	`json:"description" db:"description"`
-	PublishedAtStr 	*string    	`json:"concluded_at" db:"concluded_at_str"`
-	PublishedAt    	*time.Time 	`json:"concluded_at_time" db:"concluded_at_time"`
+	PublishedAtStr 	*string    	`json:"published_at" db:"published_at_str"`
+	PublishedAt    	*time.Time 	`json:"published_at_time" db:"published_at_time"`
 	Revelance      	*int       	`json:"revelance" db:"revelance"`
 	LinksArray      LinkArray  	`json:"links" db:"-"`
+	Skills          SkillArray 	`json:"skills" db:"-"`
 }
 
 func (c *ProjectFlat) Validate() error {
@@ -32,13 +33,15 @@ func (c *ProjectFlat) Validate() error {
 }
 
 type ProjectResp struct {
-	Id             int        		`json:"id" db:"id"`
-	Title          string     		`json:"title" db:"title"`
-	Description    *string    		`json:"description,omitempty" db:"description"`
-	PublishedAtStr *string    		`json:"concluded_at" db:"concluded_at_str"`
-	PublishedAt    *time.Time 		`json:"concluded_at_time,omitempty" db:"concluded_at_time"`
-	Revelance      *int       		`json:"revelance,omitempty" db:"revelance"`
-	LinksRespArray LinkRespArray 	`json:"links" db:"-"`
+	Id             int        			`json:"id" db:"id"`
+	Title          string     			`json:"title" db:"title"`
+	Description    *string    			`json:"description,omitempty" db:"description"`
+	PublishedAtStr *string    			`json:"published_at" db:"published_at_str"`
+	PublishedAt    *time.Time 			`json:"published_at_time,omitempty" db:"published_at_time"`
+	Revelance      *int       			`json:"revelance,omitempty" db:"revelance"`
+	LinksRespArray LinkRespArray 		`json:"links" db:"-"`
+	Attachments    *AttachmentRespArray `json:"attachments,omitempty" db:"-"`
+	Skills         SkillRespArray 		`json:"skills,omitempty" db:"-"`
 }
 
 func (c *ProjectResp) Format() error {

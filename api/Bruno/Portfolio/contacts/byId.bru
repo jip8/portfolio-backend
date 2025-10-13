@@ -1,0 +1,15 @@
+meta {
+  name: byId
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/contacts/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 1
+}

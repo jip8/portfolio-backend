@@ -1,0 +1,25 @@
+meta {
+  name: create
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/contacts
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "link": "http://example.com/contact",
+    "plataform": "Website",
+    "description": "My personal website",
+    "active": true,
+    "revelance": 10
+  }
+}
