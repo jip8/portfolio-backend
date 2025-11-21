@@ -28,6 +28,7 @@ func (r *UpdateRepository) Execute(ctx context.Context, req entity.ProjectFlat) 
 			description = :description,
 			published_at = :published_at_time,
 			revelance = :revelance,
+			thumbnail_id = :thumbnail_id,
 			updated_at = NOW()
 		WHERE
 			id = :id

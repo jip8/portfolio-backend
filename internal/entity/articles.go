@@ -15,6 +15,7 @@ type ArticleFlat struct {
 	PublishedAtStr 	*string    	`json:"published_at" db:"published_at_str"`
 	PublishedAt    	*time.Time 	`json:"published_at_time" db:"published_at_time"`
 	Revelance      	*int       	`json:"revelance" db:"revelance"`
+	ThumbnailId    	*int       	`json:"thumbnail_id" db:"thumbnail_id"`
 	LinksArray      LinkArray  	`json:"links" db:"-"`
 	Skills          SkillArray 	`json:"skills" db:"-"`
 }
@@ -44,6 +45,8 @@ type ArticleResp struct {
 	PublishedAtStr 	*string    				`json:"published_at,omitempty" db:"published_at_str"`
 	PublishedAt    	*time.Time 				`json:"published_at_time,omitempty" db:"published_at_time"`
 	Revelance      	*int       				`json:"revelance,omitempty" db:"revelance"`
+	ThumbnailId    	*int       				`json:"thumbnail_id,omitempty" db:"thumbnail_id"`
+	Thumbnail       *string    				`json:"thumbnail,omitempty" db:"thumbnail"`
 	LinksRespArray  LinkRespArray 			`json:"links,omitempty" db:"-"`
 	Attachments     *AttachmentRespArray 	`json:"attachments,omitempty" db:"-"`
 	Skills          SkillRespArray 			`json:"skills,omitempty" db:"-"`
