@@ -1,5 +1,9 @@
 SET search_path TO portfolio;
 
+ALTER TABLE projects DROP CONSTRAINT IF EXISTS fk_projects_thumbnail;
+ALTER TABLE articles DROP CONSTRAINT IF EXISTS fk_articles_thumbnail;
+
+-- Drop tables in reverse order
 DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS courses;
 DROP TABLE IF EXISTS skills_relations;
