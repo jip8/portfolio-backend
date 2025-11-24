@@ -4,13 +4,11 @@ SET search_path TO portfolio;
 -- ABOUT TEXT
 -- ============================================================================
 INSERT INTO about_text (title, content) VALUES
-('Desenvolvedor Full Stack, Desenvolvedor Backend, Especialista em Redes, Engenheiro de Software, Pesquisador em Controle de Acesso, Desenvolvedor Web, Desenvolvedor Mobile', 'Possuo sólida experiência em programação, com domínio nas linguagens C, Python e C#, além de atuação no desenvolvimento de APIs REST e microserviços utilizando Go e Python. Tenho conhecimento em bancos de dados como PostgreSQL e MySQL, e experiência com tecnologias como Redis, MinIO (S3) e ferramentas de versionamento com Git.
+('Desenvolvedor Full Stack, Engenheiro de IA e Automações, Especialista em Redes, Engenheiro de Software, Entusiasta de Linux e servidores, Apaixonado por progamação', 'Muito prazer! Sou um apaixonado por programação e tecnologia, e atualmente meu foco principal é construir microsserviços e soluções inteligentes usando Python e Go. Gosto de desenvolver sistemas distribuídos que sejam leves, eficientes e escaláveis, integrando recursos de IA para automatizar processos, analisar dados e entregar respostas mais rápidas e inteligentes.
 
-Durante a graduação em Tecnologia em Redes de Computadores, adquiri amplo conhecimento em redes, infraestrutura, configuração de dispositivos de roteamento e switches, servidores, uso de contêineres com Docker, além de familiaridade com diferentes protocolos de rede e metodologias ágeis.
+No dia a dia, trabalho criando APIs de alta performance, serviços orientados a eventos e integrações com modelos de IA. Utilizo ferramentas como Redis, PostgreSQL, MinIO e Docker para estruturar serviços modernos, bem organizados e preparados para lidar com alto volume de dados e requisições. Minha formação em Redes também me ajuda muito na parte de infraestrutura, segurança e operação em ambientes Linux.
 
-Atualmente, atuo também com integração e orquestração de modelos de linguagem (LLMs) e agentes de IA, utilizando ferramentas como CrewAI e LangChain, com integrações em plataformas como OpenAI, Anthropic, Cohere, DeepSeek e Google.
-
-Tenho experiência prática com Linux, virtualização com Proxmox, e um nível intermediário de inglês. Estou em constante evolução, buscando novos aprendizados e desafios na área de desenvolvimento e inovação tecnológica.');
+Hoje, estou focado em desenvolver soluções modulares e práticas, unindo engenharia de software, automação e inteligência artificial. Meu objetivo é sempre criar sistemas que realmente resolvam problemas, sejam fáceis de evoluir e consigam acompanhar o ritmo das novas tecnologias.');
 
 -- ============================================================================
 -- SKILLS
@@ -28,6 +26,7 @@ INSERT INTO skills (title, description) VALUES
 ('PostgreSQL', 'Sistema de gerenciamento de banco de dados relacional open-source'),
 ('MySQL', 'Sistema de gerenciamento de banco de dados relacional'),
 ('Redis', 'Banco de dados em memória para cache e comunicação assíncrona entre serviços'),
+('MongoDB', 'Sistema de gerenciamento de banco de dados orientado a documentos'),
 
 -- Frameworks e Bibliotecas
 ('Flask', 'Framework web minimalista em Python'),
@@ -77,20 +76,28 @@ INSERT INTO skills (title, description) VALUES
 -- ============================================================================
 INSERT INTO experiences (title, function, description, initial_date, end_date, actual) VALUES
 ('Universidade Federal de Santa Maria - UFSM', 'Desenvolvedor',
-'Atuei no desenvolvimento de ambientes virtuais interativos com o objetivo de reduzir riscos de acidentes e custos associados a práticas reais, utilizando óculos de realidade virtual, mais especificamente o Meta Quest 2.
+'Atuei no desenvolvimento de ambientes virtuais interativos aplicados ao ensino e treinamento, com foco na redução de riscos de acidentes e na diminuição de custos operacionais. Utilizei óculos de realidade virtual Meta Quest 2 para criar experiências imersivas que simulavam cenários de aprendizagem realistas.
 
-Além disso, participei da integração do óculos Meta Quest 2 com o robô humanoide NAO V6, que possui mobilidade, articulações e câmeras. Esse trabalho possibilitou que o usuário do VR controlasse o robô e visualizasse a sua visão em tempo real.',
+Também participei da integração entre o Meta Quest 2 e o robô humanoide NAO V6, que possui mobilidade, articulações e sensores de visão. Essa integração permitiu que o usuário controlasse o robô diretamente a partir do VR, acompanhando em tempo real o que a câmera do NAO visualizava. O projeto envolveu conceitos de teleoperação, comunicação entre dispositivos, sincronização de movimentos e aplicação de técnicas de realidade mista.',
 '2023-01-01', '2024-12-31', false),
 
 ('Universidade Federal de Santa Maria - UFSM', 'Desenvolvedor',
-'Atuei no desenvolvimento de sistemas para o controle de acesso e gerenciamento dos ambientes do CTISM. Esse projeto também resultou no meu Trabalho de Conclusão de Curso, "Aperfeiçoando Sistemas de Controle de Acesso Utilizando Reconhecimento Facial", e também na publicação de um artigo na ERRC/WRseg 2024 em Rio Grande/RS.',
+'Desenvolvi sistemas completos para controle de acesso e gerenciamento dos ambientes do CTISM, envolvendo reconhecimento facial, auditoria de acessos, integração com dispositivos físicos e gerenciamento de usuários. O projeto resultou no meu Trabalho de Conclusão de Curso, “Aperfeiçoando Sistemas de Controle de Acesso Utilizando Reconhecimento Facial”, onde explorei técnicas de visão computacional, bases de dados biométricas e otimização de performance para ambientes reais.
+
+Além disso, contribuiu para uma publicação na ERRC/WRseg 2024, em Rio Grande/RS, apresentando novos métodos e soluções aplicadas ao controle de acesso físico. Esse trabalho uniu redes, segurança, desenvolvimento de software, automação e integração com dispositivos embarcados.',
 '2024-01-01', '2025-01-01', false),
 
 ('Nasverdes Tecnologia LTDA', 'Desenvolvedor Back-End',
-'Atuo como desenvolvedor backend com foco em APIs RESTful e microserviços, utilizando principalmente Go e Python. Desenvolvo soluções voltadas para a integração e orquestração de agentes de inteligência artificial, empregando ferramentas como CrewAI e LangChain, além de realizar integrações com APIs da OpenAI, Anthropic, DeepSeek, Google e Cohere.
+'Atuo como desenvolvedor backend com foco em arquitetura de microsserviços, APIs de alta performance e soluções inteligentes utilizando principalmente Go e Python. Desenvolvo integrações avançadas com agentes de inteligência artificial, utilizando tecnologias como CrewAI, LangChain e modelos das principais empresas do setor, como OpenAI, Anthropic, DeepSeek, Google e Cohere.
 
-Também trabalho com processamento e manipulação de documentos (PDFs, DOCs, arquivos estruturados e não estruturados), alimentando agentes de IA com dados validados, extraídos e organizados. Utilizo Redis para comunicação assíncrona entre serviços, PostgreSQL para dados relacionais, Git para versionamento e S3 para armazenamento de documentos.',
+Crio pipelines completos de processamento e extração de informações a partir de documentos PDF, DOCX, arquivos estruturados e não estruturados, convertendo-os em dados limpos, validados e otimizados para consumo por agentes de IA. Esses pipelines envolvem OCR, parsing, saneamento de dados, chunking inteligente e enriquecimento de contexto.
+
+Utilizo Redis para comunicação assíncrona entre serviços, filas distribuídas e troca de mensagens; PostgreSQL para armazenamento relacional e consultas eficientes; e S3/MinIO para gestão de arquivos e objetos. Trabalho ainda com conteinerização (Docker), versionamento com Git e práticas modernas de observabilidade e escalabilidade.
+
+Minha atuação envolve desde a arquitetura dos serviços, definição das integrações, criação de soluções de IA assistida até a entrega de sistemas robustos, seguros e altamente escaláveis para uso em produção.',
 '2025-01-01', NULL, true);
+
+
 
 -- ============================================================================
 -- SKILLS RELATIONS - EXPERIENCES
