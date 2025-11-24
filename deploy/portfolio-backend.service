@@ -1,0 +1,20 @@
+[Unit]
+Description=Portfolio Backend API
+After=network.target postgresql.service redis.service
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/portfolio-backend
+ExecStart=/var/www/portfolio-backend/server
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/var/log/portfolio-backend/output.log
+StandardError=append:/var/log/portfolio-backend/error.log
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

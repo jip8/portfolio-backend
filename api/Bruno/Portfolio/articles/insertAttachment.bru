@@ -10,14 +10,15 @@ post {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
-}
-
 params:path {
   id: 1
 }
 
+auth:bearer {
+  token: {{token}}
+}
+
 body:multipart-form {
-  file: @file(/path/to/your/file.png)
+  file: @file(/home/jip/Downloads/RESUMO Vestibular UniRV.pdf)
+  title: title
 }

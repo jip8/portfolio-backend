@@ -693,6 +693,9 @@ components:
           example: "01-01-2006"
         revelance:
           type: integer
+        thumbnail_id:
+          type: integer
+          description: ID of the attachment to use as thumbnail
         links:
           type: array
           items:
@@ -720,6 +723,12 @@ components:
           example: "01-01-2006"
         revelance:
           type: integer
+        thumbnail_id:
+          type: integer
+          description: ID of the attachment used as thumbnail
+        thumbnail:
+          type: string
+          description: Link of the thumbnail attachment
         links:
           type: array
           items:
@@ -957,6 +966,9 @@ components:
           example: "01-01-2006"
         revelance:
           type: integer
+        thumbnail_id:
+          type: integer
+          description: ID of the attachment to use as thumbnail
         links:
           type: array
           items:
@@ -982,6 +994,12 @@ components:
           example: "01-01-2006"
         revelance:
           type: integer
+        thumbnail_id:
+          type: integer
+          description: ID of the attachment used as thumbnail
+        thumbnail:
+          type: string
+          description: Link of the thumbnail attachment
         links:
           type: array
           items:

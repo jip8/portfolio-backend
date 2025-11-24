@@ -132,6 +132,9 @@ func (h *ExperiencesHandler) List() echo.HandlerFunc {
 
 		req.Process()
 
+		req.Order = "initial_date DESC"
+
+		
 		resp, err := h.useCase.GetList(c.Request().Context(), req)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})

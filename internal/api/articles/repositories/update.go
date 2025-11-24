@@ -30,6 +30,7 @@ func (r *UpdateRepository) Execute(ctx context.Context, req entity.ArticleFlat) 
 			local = :local,
 			published_at = :published_at_time,
 			revelance = :revelance,
+			thumbnail_id = :thumbnail_id,
 			updated_at = NOW()
 		WHERE
 			id = :id

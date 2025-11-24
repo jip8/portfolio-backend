@@ -10,14 +10,15 @@ post {
   auth: bearer
 }
 
+params:path {
+  id: 6
+}
+
 auth:bearer {
   token: {{token}}
 }
 
-params:path {
-  id: 1
-}
-
 body:multipart-form {
-  file: @file(/path/to/your/file.png)
+  file: @file(/home/jip/Downloads/jwt-token.png)
+  title: teste
 }

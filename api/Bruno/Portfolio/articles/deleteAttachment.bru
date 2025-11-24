@@ -5,15 +5,19 @@ meta {
 }
 
 delete {
-  url: {{base_url}}/articles/:id/attachments
+  url: {{base_url}}/articles/:id/attachments?ids=1
   body: none
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
+params:query {
+  ids: 1
 }
 
 params:path {
   id: 1
+}
+
+auth:bearer {
+  token: {{token}}
 }

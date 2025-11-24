@@ -1,0 +1,108 @@
+name: Backend CI/CD - Portfolio
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache: true
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Verify dependencies
+        run: go mod verify
+
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Build application
+        run: |
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+            -ldflags="-w -s" \
+            -o server \
+            ./cmd/server
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-binary
+          path: server
+          retention-days: 1
+
+  deploy:
+    name: Deploy to Hostinger VPS
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-binary
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy files to server
+        run: |
+          chmod +x server
+          rsync -avz --progress \
+            -e "ssh -p ${{ secrets.SSH_PORT || 22 }}" \
+            server \
+            migrations/ \
+            init/ \
+            deploy/portfolio-backend.service \
+            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/tmp/portfolio-deploy/
+
+      - name: Install and restart service
+        run: |
+          ssh -p ${{ secrets.SSH_PORT || 22 }} \
+            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
+            'set -e && \
+             sudo mkdir -p /var/www/portfolio-backend && \
+             sudo mkdir -p /var/log/portfolio-backend && \
+             sudo systemctl stop portfolio-backend || true && \
+             sudo cp /tmp/portfolio-deploy/server /var/www/portfolio-backend/ && \
+             sudo cp -r /tmp/portfolio-deploy/init /var/www/portfolio-backend/ && \
+             sudo cp -r /tmp/portfolio-deploy/migrations /var/www/portfolio-backend/ && \
+             sudo chmod +x /var/www/portfolio-backend/server && \
+             sudo chown -R www-data:www-data /var/www/portfolio-backend && \
+             sudo chown -R www-data:www-data /var/log/portfolio-backend && \
+             sudo cp /tmp/portfolio-deploy/portfolio-backend.service /etc/systemd/system/ && \
+             sudo systemctl daemon-reload && \
+             sudo systemctl enable portfolio-backend && \
+             sudo systemctl start portfolio-backend && \
+             rm -rf /tmp/portfolio-deploy && \
+             sudo systemctl status portfolio-backend --no-pager'
+
+      - name: Health check
+        run: |
+          sleep 5
+          curl -f https://api.jipdev.cloud/health || \
+          curl -f http://${{ secrets.SSH_HOST }}:8080/health || \
+          echo "Warning: Health check failed"

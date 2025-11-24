@@ -28,7 +28,8 @@ func (r *GetByIdRepository) Execute(ctx context.Context, id int) (*entity.Articl
 		description,
 		local,
 		published_at AS published_at_time,
-		revelance
+		revelance,
+		thumbnail_id
 	FROM portfolio.articles WHERE id = $1`
 
 	var article entity.ArticleResp

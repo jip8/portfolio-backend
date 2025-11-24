@@ -1,6 +1,6 @@
-#TODO:
 
-- add docker
-- add readme
-- add vault
-- add curriculum
+## TODO
+
+- [ ] Adicionar Docker
+- [ ] Adicionar Vault para secrets
+- [ ] Melhorar listagem

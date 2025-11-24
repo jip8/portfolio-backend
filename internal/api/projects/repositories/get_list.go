@@ -25,12 +25,15 @@ func (r *GetListRepository) Execute(ctx context.Context, listReq entity.ListReq)
 	var items []entity.ProjectResp
 	query := `
 	SELECT
-		id,
-		title,
-		description,
-		published_at AS published_at_time,
-		revelance
-	FROM portfolio.projects
+		p.id,
+		p.title,
+		p.description,
+		p.published_at AS published_at_time,
+		p.revelance,
+		p.thumbnail_id,
+		a.link AS thumbnail
+	FROM portfolio.projects p
+	LEFT JOIN portfolio.attachments a ON a.id = p.thumbnail_id
 	ORDER BY ${order}
 	LIMIT :limit
 	OFFSET :offset`

@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS projects (
     description     TEXT,
     published_at    DATE,
     revelance       INTEGER,
+    thumbnail_id    INTEGER,
 
     updated_at      TIMESTAMP DEFAULT NOW()
 );
@@ -100,7 +101,19 @@ CREATE TABLE IF NOT EXISTS articles (
     local           VARCHAR(255),
     published_at    DATE,
     revelance       INTEGER,
+    thumbnail_id    INTEGER,
 
     updated_at      TIMESTAMP DEFAULT NOW()
 );
 
+ALTER TABLE projects
+    ADD CONSTRAINT fk_projects_thumbnail
+    FOREIGN KEY (thumbnail_id)
+    REFERENCES attachments(id)
+    ON DELETE SET NULL;
+
+ALTER TABLE articles
+    ADD CONSTRAINT fk_articles_thumbnail
+    FOREIGN KEY (thumbnail_id)
+    REFERENCES attachments(id)
+    ON DELETE SET NULL;

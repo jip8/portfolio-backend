@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -9,6 +10,7 @@ import (
 	"github.com/jip/portfolio-backend/internal/services"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo-jwt/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	loginHandlers "github.com/jip/portfolio-backend/internal/api/login/handlers"
 	loginUseCases "github.com/jip/portfolio-backend/internal/api/login/usecases"
@@ -73,6 +75,11 @@ func main() {
 	log.Println("Successfully connected to Redis, Minio, and Postgres")
 
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+	}))
 
 	jwtMiddleware := echojwt.WithConfig(echojwt.Config{
 		SigningKey: []byte(config.JWT.Secret),
