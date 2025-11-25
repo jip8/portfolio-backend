@@ -73,6 +73,7 @@ jobs:
           chmod +x server
           rsync -avz --progress \
             -e "ssh -p ${{ secrets.SSH_PORT || 22 }}" \
+            --exclude='init/config.yaml' \
             server \
             migrations/ \
             init/ \
