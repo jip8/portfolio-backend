@@ -110,6 +110,5 @@ jobs:
       - name: Health check
         run: |
           sleep 5
-          curl -f https://api.jipdev.cloud/health || \
-          curl -f http://${{ secrets.SSH_HOST }}:8080/health || \
+          curl -f http://${{ secrets.SSH_HOST }}:8001/ || \
           echo "Warning: Health check failed"
