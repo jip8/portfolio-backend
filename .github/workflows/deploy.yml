@@ -68,6 +68,12 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Prepare deploy directory on server
+        run: |
+          ssh -p ${{ secrets.SSH_PORT || 22 }} \
+            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
+            'mkdir -p /tmp/portfolio-deploy'
+
       - name: Deploy files to server
         run: |
           chmod +x server
@@ -85,12 +91,12 @@ jobs:
           ssh -p ${{ secrets.SSH_PORT || 22 }} \
             ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} \
             'set -e && \
-             sudo mkdir -p /var/www/portfolio-backend && \
+             sudo mkdir -p /var/www/portfolio-backend/init && \
              sudo mkdir -p /var/log/portfolio-backend && \
              sudo systemctl stop portfolio-backend || true && \
              sudo cp /tmp/portfolio-deploy/server /var/www/portfolio-backend/ && \
-             sudo cp -r /tmp/portfolio-deploy/init /var/www/portfolio-backend/ && \
-             sudo cp -r /tmp/portfolio-deploy/migrations /var/www/portfolio-backend/ && \
+             sudo cp -n /tmp/portfolio-deploy/init/* /var/www/portfolio-backend/init/ 2>/dev/null || true && \
+             sudo cp -r /tmp/portfolio-deploy/migrations /var/www/portfolio-backend/ 2>/dev/null || true && \
              sudo chmod +x /var/www/portfolio-backend/server && \
              sudo chown -R www-data:www-data /var/www/portfolio-backend && \
              sudo chown -R www-data:www-data /var/log/portfolio-backend && \
